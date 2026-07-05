@@ -763,11 +763,16 @@ function Update-Layout {
     }
 
     $bottomY = $leftPanel.Bottom + 20
-    $sbLabel.Location = New-Object System.Drawing.Point($leftPanel.Left, ($bottomY + 3))
-    $sbDropdown.Location = New-Object System.Drawing.Point(($sbLabel.Right + 5), $bottomY)
     
+    # Position the labels first so we know their bounds
+    $sbLabel.Location = New-Object System.Drawing.Point($leftPanel.Left, ($bottomY + 3))
     $dnsLabel.Location = New-Object System.Drawing.Point($leftPanel.Left, ($bottomY + 35))
-    $dnsDropdown.Location = New-Object System.Drawing.Point(($dnsLabel.Right + 5), ($bottomY + 32))
+
+    # Align both dropdown boxes slightly to the right of the wider DNS label
+    $alignedDropdownX = $dnsLabel.Right + 5
+
+    $sbDropdown.Location = New-Object System.Drawing.Point($alignedDropdownX, $bottomY)
+    $dnsDropdown.Location = New-Object System.Drawing.Point($alignedDropdownX, ($bottomY + 32))
 
     $dnsTplLabel.Location = New-Object System.Drawing.Point(($dnsDropdown.Right + 20), ($bottomY + 35))
     $dnsTplInput.Location = New-Object System.Drawing.Point(($dnsTplLabel.Right + 5), ($bottomY + 32))
