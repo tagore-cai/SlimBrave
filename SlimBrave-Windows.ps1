@@ -176,7 +176,7 @@ function Set-RoundedCorners($ctrl, $r) {
 }
 
 $presetLabel = New-Object System.Windows.Forms.Label
-$presetLabel.Text = "Quick Toggles:"
+$presetLabel.Text = "Quick Presets:"
 $presetLabel.AutoSize = $true
 $presetLabel.Font = New-Object System.Drawing.Font("Microsoft Sans Serif", 9, [System.Drawing.FontStyle]::Bold)
 $presetLabel.ForeColor = [System.Drawing.Color]::LightSkyBlue
