@@ -548,7 +548,7 @@ $exportButton.Font = $boldFont
 $exportButton.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
 $exportButton.FlatAppearance.BorderSize = 0
 $exportButton.BackColor = [System.Drawing.Color]::FromArgb(150, 102, 102, 102)
-$exportButton.ForeColor = [System.Drawing.Color]::FromArgb(103, 163, 185)
+$exportButton.ForeColor = [System.Drawing.Color]::FromArgb(29, 255, 227)
 $toolTip.SetToolTip($exportButton, "Export the current UI configuration to a JSON file.")
 $form.Controls.Add($exportButton)
 
