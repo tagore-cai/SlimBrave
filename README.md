@@ -22,7 +22,7 @@ Supported on Windows and MacOS!
 [![Slimbrave-Windows.png](https://i.postimg.cc/5yNPg6pc/Slimbrave-Windows.png)](https://postimg.cc/Pp9zrfBK)
 
 ## SlimBrave Revived - macOS
-[![Slimbrave-mac-OS.png](https://i.postimg.cc/rFXtXvx3/Slimbrave-mac-OS.png)](https://postimg.cc/w32BD4WQ)
+[![Slimbrave-mac-OS.png](https://i.postimg.cc/cChH34Lq/Slimbrave-mac-OS.png)](https://postimg.cc/xNknDQmg)
 
 > [!IMPORTANT]
 > This tool is currently not built for Linux.
