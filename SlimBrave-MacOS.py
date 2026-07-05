@@ -1692,11 +1692,11 @@ def main():
 
     tk.Label(inner_top, text="Quick Presets:", font=("sans-serif", 12, "bold"), fg="#87CEFA", bg="#191919").pack(side="left", padx=(0, 10))
 
-    btn_priv = ttk.Button(inner_top, text="Privacy", style="Preset.TButton", command=lambda: apply_preset("privacy"))
+    btn_priv = ttk.Button(inner_top, text="High Privacy", style="Preset.TButton", command=lambda: apply_preset("privacy"))
     btn_priv.pack(side="left", padx=10)
     create_tooltip(btn_priv, "Applies the recommended preset for High Privacy and Moderate Security.")
 
-    btn_sec = ttk.Button(inner_top, text="Security", style="Preset.TButton", command=lambda: apply_preset("security"))
+    btn_sec = ttk.Button(inner_top, text="High Security", style="Preset.TButton", command=lambda: apply_preset("security"))
     btn_sec.pack(side="left", padx=10)
     create_tooltip(btn_sec, "Applies the recommended preset for High Security and Moderate Privacy.")
 
@@ -1853,11 +1853,11 @@ def main():
     btn_frame = tk.Frame(bottom_bar, bg="#2d2d2d")
     btn_frame.pack(side="top", fill="x", pady=5)
 
-    ttk.Button(btn_frame, text="Export JSON", style="Export.TButton", command=export_settings).pack(side="left", expand=True, padx=5)
-    ttk.Button(btn_frame, text="Import JSON", style="Import.TButton", command=import_settings).pack(side="left", expand=True, padx=5)
-    ttk.Button(btn_frame, text="Reload", style="Reload.TButton", command=reload_ui_from_registry).pack(side="left", expand=True, padx=5)
-    ttk.Button(btn_frame, text="Apply", style="Apply.TButton", command=apply_settings).pack(side="left", expand=True, padx=5)
-    ttk.Button(btn_frame, text="Reset", style="Reset.TButton", command=reset_settings).pack(side="left", expand=True, padx=5)
+    ttk.Button(btn_frame, text="Export Settings", style="Export.TButton", command=export_settings).pack(side="left", expand=True, padx=5)
+    ttk.Button(btn_frame, text="Import Settings", style="Import.TButton", command=import_settings).pack(side="left", expand=True, padx=5)
+    ttk.Button(btn_frame, text="Pull Settings from Brave", style="Reload.TButton", command=reload_ui_from_registry).pack(side="left", expand=True, padx=5)
+    ttk.Button(btn_frame, text="Apply Settings", style="Apply.TButton", command=apply_settings).pack(side="left", expand=True, padx=5)
+    ttk.Button(btn_frame, text="Reset All Settings", style="Reset.TButton", command=reset_settings).pack(side="left", expand=True, padx=5)
 
     status_label = tk.Label(bottom_bar, textvariable=status_var, bg="#2d2d2d", fg="#aaaaaa", font=("courier", 10), anchor="w", padx=10)
     status_label.pack(side="bottom", fill="x")
