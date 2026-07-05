@@ -1,4 +1,4 @@
-# Slimbrave - Revived - v1.1.0
+# Slimbrave - Revived - v1.1.1
 
 if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Start-Process powershell -ArgumentList "-File `"$($MyInvocation.MyCommand.Path)`"" -Verb RunAs
@@ -43,7 +43,7 @@ if (-not (Test-Path -Path $global:registryPath)) {
 Clear-Host
 
 $form = New-Object System.Windows.Forms.Form
-$form.Text = "SlimBrave - Revived v1.1.0"
+$form.Text = "SlimBrave - Revived v1.1.1"
 $form.ForeColor = [System.Drawing.Color]::White
 $form.Size = New-Object System.Drawing.Size(1300, 850) 
 $form.MinimumSize = New-Object System.Drawing.Size(1300, 850)
