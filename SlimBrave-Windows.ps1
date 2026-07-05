@@ -58,7 +58,6 @@ $allPerms = @()
 $toolTip = New-Object System.Windows.Forms.ToolTip
 $boldFont = New-Object System.Drawing.Font("Microsoft Sans Serif", 9.5, [System.Drawing.FontStyle]::Bold)
 
-# --- Channel Selector Setup ---
 $channelLabel = New-Object System.Windows.Forms.Label
 $channelLabel.Text = "Target Channel:"
 $channelLabel.AutoSize = $true
@@ -115,7 +114,6 @@ $channelDropdown.Add_SelectedIndexChanged({
     Reload-UIFromRegistry
     Update-Status "Target channel switched to $($channelDropdown.SelectedItem). UI reloaded."
 })
-# ------------------------------
 
 $statusBar = New-Object System.Windows.Forms.Label
 $statusBar.Height = 30
@@ -550,7 +548,7 @@ $exportButton.Font = $boldFont
 $exportButton.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
 $exportButton.FlatAppearance.BorderSize = 0
 $exportButton.BackColor = [System.Drawing.Color]::FromArgb(150, 102, 102, 102)
-$exportButton.ForeColor = [System.Drawing.Color]::FromArgb(70, 130, 180)
+$exportButton.ForeColor = [System.Drawing.Color]::FromArgb(103, 163, 185)
 $toolTip.SetToolTip($exportButton, "Export the current UI configuration to a JSON file.")
 $form.Controls.Add($exportButton)
 
