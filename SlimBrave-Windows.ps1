@@ -83,7 +83,7 @@ function Set-DirtyState([bool]$dirty) {
     if ($global:suspendDirtyTracking) { return }
     $global:isDirty = $dirty
     if ($dirty) {
-        $saveStatusLabel.Text = "Changes Need To Be Saved....."
+        $saveStatusLabel.Text = "Changes Need To Be Saved..."
         $saveStatusLabel.ForeColor = [System.Drawing.Color]::Gold
     } else {
         $saveStatusLabel.Text = "Changes Applied ✔"
@@ -125,7 +125,7 @@ $presetLabel.ForeColor = [System.Drawing.Color]::LightSkyBlue
 $form.Controls.Add($presetLabel)
 
 $btnPrivacy = New-Object System.Windows.Forms.Button
-$btnPrivacy.Text = "High Privacy + Moderate Security"
+$btnPrivacy.Text = "High Privacy"
 $btnPrivacy.Size = New-Object System.Drawing.Size(280, 35)
 $btnPrivacy.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
 $btnPrivacy.FlatAppearance.BorderSize = 0
@@ -134,7 +134,7 @@ $toolTip.SetToolTip($btnPrivacy, "Applies the recommended preset for High Privac
 $form.Controls.Add($btnPrivacy)
 
 $btnSecurity = New-Object System.Windows.Forms.Button
-$btnSecurity.Text = "High Security + Moderate Privacy"
+$btnSecurity.Text = "High Security"
 $btnSecurity.Size = New-Object System.Drawing.Size(280, 35)
 $btnSecurity.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
 $btnSecurity.FlatAppearance.BorderSize = 0
@@ -152,7 +152,7 @@ $telemetryLabel = New-Object System.Windows.Forms.Label
 $telemetryLabel.Text = "Telemetry and Reporting"
 $telemetryLabel.Font = New-Object System.Drawing.Font("Microsoft Sans Serif", 10.5, [System.Drawing.FontStyle]::Bold)
 $telemetryLabel.Location = New-Object System.Drawing.Point(28, 10)
-$telemetryLabel.Size = New-Object System.Drawing.Size(300, 20)
+$telemetryLabel.Size = New-Object System.Drawing.Size(300, 25)
 $telemetryLabel.ForeColor = [System.Drawing.Color]::LightSalmon
 $leftPanel.Controls.Add($telemetryLabel)
 
@@ -166,7 +166,7 @@ $telemetryFeatures = @(
     @{ Name = "Disable Web Discovery"; Key = "BraveWebDiscoveryEnabled"; Value = 0; Type = "DWord"; ToolTip = "Prevents anonymous search/browsing data from being sent to Brave Search.`n`nSuggested Settings for Privacy: Ticked | Security: Ticked" }
 )
 
-[int]$leftY = 35
+[int]$leftY = 40
 foreach ($feature in $telemetryFeatures) {
     $checkbox = New-Object System.Windows.Forms.CheckBox
     $checkbox.Text = $feature.Name
@@ -198,10 +198,10 @@ $privacyLabel = New-Object System.Windows.Forms.Label
 $privacyLabel.Text = "Privacy and Security"
 $privacyLabel.Font = New-Object System.Drawing.Font("Microsoft Sans Serif", 11, [System.Drawing.FontStyle]::Bold)
 $privacyLabel.Location = New-Object System.Drawing.Point(28, $leftY)
-$privacyLabel.Size = New-Object System.Drawing.Size(300, 20)
+$privacyLabel.Size = New-Object System.Drawing.Size(300, 25)
 $privacyLabel.ForeColor = [System.Drawing.Color]::LightSalmon
 $leftPanel.Controls.Add($privacyLabel)
-$leftY += 25
+$leftY += 30
 
 $privacyFeatures = @(
     @{ Name = "Disable Autofill (Addresses)"; Key = "AutofillAddressEnabled"; Value = 0; Type = "DWord"; ToolTip = "Disables saving and autofilling addresses.`n`nSuggested Settings for Privacy: Ticked | Security: Unticked" },
@@ -267,10 +267,10 @@ $braveLabel = New-Object System.Windows.Forms.Label
 $braveLabel.Text = "Brave Features"
 $braveLabel.Font = New-Object System.Drawing.Font("Microsoft Sans Serif", 11, [System.Drawing.FontStyle]::Bold)
 $braveLabel.Location = New-Object System.Drawing.Point(28, $midY)
-$braveLabel.Size = New-Object System.Drawing.Size(300, 20)
+$braveLabel.Size = New-Object System.Drawing.Size(300, 25)
 $braveLabel.ForeColor = [System.Drawing.Color]::LightSalmon
 $midPanel.Controls.Add($braveLabel)
-$midY += 25
+$midY += 30
 
 $braveFeatures = @(
     @{ Name = "Disable Brave Rewards and Sponsored Elements"; Key = "BraveRewardsDisabled"; Value = 1; Type = "DWord"; ToolTip = "Completely disables the Brave Crypto Rewards system and disables sponsored backgrounds on the New Tab page.`n`nSuggested Settings for Privacy: Ticked | Security: Ticked" },
@@ -316,10 +316,10 @@ $perfLabel = New-Object System.Windows.Forms.Label
 $perfLabel.Text = "Performance and Bloat"
 $perfLabel.Font = New-Object System.Drawing.Font("Microsoft Sans Serif", 11, [System.Drawing.FontStyle]::Bold)
 $perfLabel.Location = New-Object System.Drawing.Point(28, $midY)
-$perfLabel.Size = New-Object System.Drawing.Size(300, 20)
+$perfLabel.Size = New-Object System.Drawing.Size(300, 25)
 $perfLabel.ForeColor = [System.Drawing.Color]::LightSalmon
 $midPanel.Controls.Add($perfLabel)
-$midY += 25
+$midY += 30
 
 $perfFeatures = @(
     @{ Name = "Disable Background Mode"; Key = "BackgroundModeEnabled"; Value = 0; Type = "DWord"; ToolTip = "Prevents extensions/apps from running after the browser is closed.`n`nSuggested Settings for Privacy: Ticked | Security: Ticked" },
@@ -378,10 +378,10 @@ $permLabel = New-Object System.Windows.Forms.Label
 $permLabel.Text = "Site Permissions"
 $permLabel.Font = New-Object System.Drawing.Font("Microsoft Sans Serif", 11, [System.Drawing.FontStyle]::Bold)
 $permLabel.Location = New-Object System.Drawing.Point(28, $permY)
-$permLabel.Size = New-Object System.Drawing.Size(300, 20)
+$permLabel.Size = New-Object System.Drawing.Size(300, 25)
 $permLabel.ForeColor = [System.Drawing.Color]::LightSalmon
 $rightPanel.Controls.Add($permLabel)
-$permY += 30
+$permY += 35
 
 $permissionSettings = @(
     @{ Name = "Location"; Key = "DefaultGeolocationSetting"; Options = @("Not Set", "Ask", "Block", "Allow"); ToolTip = "Allows sites to request your physical location.`n`nSuggested Settings for Privacy: Block | Security: Block" },
@@ -453,7 +453,7 @@ $toolTip.SetToolTip($sbLabel, $sbTooltip)
 
 $dnsLabel = New-Object System.Windows.Forms.Label
 $dnsLabel.Text = "DNS Over HTTPS:"
-$dnsLabel.Size = New-Object System.Drawing.Size(110, 20)
+$dnsLabel.Size = New-Object System.Drawing.Size(130, 20)
 $form.Controls.Add($dnsLabel)
 
 $dnsDropdown = New-Object System.Windows.Forms.ComboBox
@@ -471,7 +471,7 @@ $toolTip.SetToolTip($dnsLabel, $dnsTooltip)
 
 $dnsTplLabel = New-Object System.Windows.Forms.Label
 $dnsTplLabel.Text = "DoH Template:"
-$dnsTplLabel.Size = New-Object System.Drawing.Size(95, 20)
+$dnsTplLabel.Size = New-Object System.Drawing.Size(110, 20)
 $form.Controls.Add($dnsTplLabel)
 
 $dnsTplInput = New-Object System.Windows.Forms.TextBox
@@ -837,7 +837,7 @@ $btnPrivacy.Add_Click({
     $dnsTplInput.Text = ""
     $global:suspendDirtyTracking = $false
     Check-DirtyState
-    Update-Status "Loaded: High Privacy + Moderate Security preset."
+    Update-Status "Loaded: High Privacy preset."
 })
 
 $btnSecurity.Add_Click({
@@ -871,7 +871,7 @@ $btnSecurity.Add_Click({
     $dnsTplInput.Text = ""
     $global:suspendDirtyTracking = $false
     Check-DirtyState
-    Update-Status "Loaded: High Security + Moderate Privacy preset."
+    Update-Status "Loaded: High Security preset."
 })
 
 function Reload-UIFromRegistry {
