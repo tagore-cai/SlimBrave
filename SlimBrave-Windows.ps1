@@ -23,7 +23,7 @@ if (-not ("DPI" -as [type])) {
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
-$registryPath = "HKLM:\SOFTWARE\Policies\BraveSoftware\Brave"
+$global:registryPath = "HKLM:\SOFTWARE\Policies\BraveSoftware\Brave"
 $logFile = Join-Path $PSScriptRoot "SlimBrave.log"
 $stateFile = Join-Path $PSScriptRoot "SlimBraveState.json"
 
@@ -35,8 +35,8 @@ function Write-Log ($message) {
     "$timestamp - $message" | Out-File -FilePath $logFile -Append
 }
 
-if (-not (Test-Path -Path $registryPath)) {
-    [void](New-Item -Path $registryPath -Force)
+if (-not (Test-Path -Path $global:registryPath)) {
+    [void](New-Item -Path $global:registryPath -Force)
     Write-Log "Created new Brave Policy registry key."
 }
 
@@ -57,6 +57,65 @@ $allFeatures = @()
 $allPerms = @()
 $toolTip = New-Object System.Windows.Forms.ToolTip
 $boldFont = New-Object System.Drawing.Font("Microsoft Sans Serif", 9.5, [System.Drawing.FontStyle]::Bold)
+
+# --- Channel Selector Setup ---
+$channelLabel = New-Object System.Windows.Forms.Label
+$channelLabel.Text = "Target Channel:"
+$channelLabel.AutoSize = $true
+$channelLabel.Font = New-Object System.Drawing.Font("Microsoft Sans Serif", 9, [System.Drawing.FontStyle]::Bold)
+$channelLabel.ForeColor = [System.Drawing.Color]::White
+$form.Controls.Add($channelLabel)
+
+$channelDropdown = New-Object System.Windows.Forms.ComboBox
+$channelDropdown.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+[void]$channelDropdown.Items.AddRange(@("Stable", "Beta", "Nightly"))
+$channelDropdown.SelectedIndex = 0
+$channelDropdown.Size = New-Object System.Drawing.Size(110, 20)
+$channelDropdown.BackColor = [System.Drawing.Color]::FromArgb(255, 45, 45, 45)
+$channelDropdown.ForeColor = [System.Drawing.Color]::White
+$channelDropdown.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+$toolTip.SetToolTip($channelDropdown, "Select the Brave Browser release channel to manage.")
+$form.Controls.Add($channelDropdown)
+
+$channelDropdown.Add_SelectedIndexChanged({
+    if ($global:isDirty -and -not $global:suspendDirtyTracking) {
+        $msgBox = [System.Windows.Forms.MessageBox]::Show(
+            "You have unsaved changes. Changing the target channel will discard them. Do you want to continue?",
+            "Unsaved Changes",
+            [System.Windows.Forms.MessageBoxButtons]::YesNo,
+            [System.Windows.Forms.MessageBoxIcon]::Warning
+        )
+        if ($msgBox -eq [System.Windows.Forms.DialogResult]::No) {
+            $global:suspendDirtyTracking = $true
+            if ($global:registryPath -match "BraveBeta") {
+                $channelDropdown.SelectedItem = "Beta"
+            } elseif ($global:registryPath -match "BraveNightly") {
+                $channelDropdown.SelectedItem = "Nightly"
+            } else {
+                $channelDropdown.SelectedItem = "Stable"
+            }
+            $global:suspendDirtyTracking = $false
+            return
+        }
+    }
+
+    if ($channelDropdown.SelectedItem -eq "Stable") {
+        $global:registryPath = "HKLM:\SOFTWARE\Policies\BraveSoftware\Brave"
+    } elseif ($channelDropdown.SelectedItem -eq "Beta") {
+        $global:registryPath = "HKLM:\SOFTWARE\Policies\BraveSoftware\BraveBeta"
+    } elseif ($channelDropdown.SelectedItem -eq "Nightly") {
+        $global:registryPath = "HKLM:\SOFTWARE\Policies\BraveSoftware\BraveNightly"
+    }
+    
+    if (-not (Test-Path -Path $global:registryPath)) {
+        [void](New-Item -Path $global:registryPath -Force)
+        Write-Log "Created new Brave Policy registry key for $($channelDropdown.SelectedItem)."
+    }
+    
+    Reload-UIFromRegistry
+    Update-Status "Target channel switched to $($channelDropdown.SelectedItem). UI reloaded."
+})
+# ------------------------------
 
 $statusBar = New-Object System.Windows.Forms.Label
 $statusBar.Height = 30
@@ -100,8 +159,7 @@ function Update-Status ($text) {
 
 function Set-DnsMode {
     param ([string] $dnsMode)
-    $regKey = "HKLM:\Software\Policies\BraveSoftware\Brave"
-    [void](Set-ItemProperty -Path $regKey -Name "DnsOverHttpsMode" -Value $dnsMode -Type String -Force)
+    [void](Set-ItemProperty -Path $global:registryPath -Name "DnsOverHttpsMode" -Value $dnsMode -Type String -Force)
     Update-Status "DNS Over HTTPS Mode set to $dnsMode"
 }
 
@@ -738,6 +796,9 @@ function Check-StateChanges {
 function Update-Layout {
     if ($form.ClientSize.Width -eq 0) { return }
 
+    $channelLabel.Location = New-Object System.Drawing.Point(20, 24)
+    $channelDropdown.Location = New-Object System.Drawing.Point(140, 22)
+
     $totalTopWidth = $presetLabel.Width + $btnPrivacy.Width + $btnSecurity.Width + 20
     $startX = ($form.ClientSize.Width - $totalTopWidth) / 2
     $presetLabel.Location = New-Object System.Drawing.Point($startX, 24)
@@ -892,13 +953,13 @@ function Reload-UIFromRegistry {
     $dnsDropdown.SelectedIndex = -1
     $dnsTplInput.Text = ""
 
-    $regProps = Get-ItemProperty -Path $registryPath -ErrorAction SilentlyContinue
+    $regProps = Get-ItemProperty -Path $global:registryPath -ErrorAction SilentlyContinue
 
     if ($null -ne $regProps) {
         foreach ($checkbox in $allFeatures) {
             $feature = $checkbox.Tag
             if ($feature.Type -eq "List") {
-                $listPath = Join-Path $registryPath $feature.Key
+                $listPath = Join-Path $global:registryPath $feature.Key
                 if (Test-Path $listPath) {
                     $checkbox.Checked = $true
                 }
@@ -977,7 +1038,7 @@ $saveButton.Add_Click({
             $feature = $checkbox.Tag
             try {
                 if ($feature.Type -eq "List") {
-                    $listPath = Join-Path $registryPath $feature.Key
+                    $listPath = Join-Path $global:registryPath $feature.Key
                     if (-not (Test-Path $listPath)) { [void](New-Item -Path $listPath -Force) }
                     $i = 1
                     foreach ($item in $feature.Value) {
@@ -985,7 +1046,7 @@ $saveButton.Add_Click({
                         $i++
                     }
                 } else {
-                    [void](Set-ItemProperty -Path $registryPath -Name $feature.Key -Value $feature.Value -Type $feature.Type -Force)
+                    [void](Set-ItemProperty -Path $global:registryPath -Name $feature.Key -Value $feature.Value -Type $feature.Type -Force)
                 }
                 Write-Log "Successfully applied policy: $($feature.Key)"
             } catch {
@@ -995,10 +1056,10 @@ $saveButton.Add_Click({
             $feature = $checkbox.Tag
             try {
                 if ($feature.Type -eq "List") {
-                    $listPath = Join-Path $registryPath $feature.Key
+                    $listPath = Join-Path $global:registryPath $feature.Key
                     if (Test-Path $listPath) { Remove-Item -Path $listPath -Recurse -Force -ErrorAction SilentlyContinue }
                 } else {
-                    Remove-ItemProperty -Path $registryPath -Name $feature.Key -ErrorAction SilentlyContinue
+                    Remove-ItemProperty -Path $global:registryPath -Name $feature.Key -ErrorAction SilentlyContinue
                 }
             } catch { }
         }
@@ -1008,9 +1069,9 @@ $saveButton.Add_Click({
         $sel = $perm.SelectedItem
         $k = $perm.Tag.Key
         if ($sel -eq "Not Set") {
-            Remove-ItemProperty -Path $registryPath -Name $k -ErrorAction SilentlyContinue
+            Remove-ItemProperty -Path $global:registryPath -Name $k -ErrorAction SilentlyContinue
             if ($k -eq "DefaultFileSystemReadGuardSetting") {
-                Remove-ItemProperty -Path $registryPath -Name "DefaultFileSystemWriteGuardSetting" -ErrorAction SilentlyContinue
+                Remove-ItemProperty -Path $global:registryPath -Name "DefaultFileSystemWriteGuardSetting" -ErrorAction SilentlyContinue
             }
         } else {
             $val = 0
@@ -1021,9 +1082,9 @@ $saveButton.Add_Click({
             if ($sel -eq "Allow") { $val = 1 }
 
             try {
-                [void](Set-ItemProperty -Path $registryPath -Name $k -Value $val -Type DWord -Force)
+                [void](Set-ItemProperty -Path $global:registryPath -Name $k -Value $val -Type DWord -Force)
                 if ($k -eq "DefaultFileSystemReadGuardSetting") {
-                    [void](Set-ItemProperty -Path $registryPath -Name "DefaultFileSystemWriteGuardSetting" -Value $val -Type DWord -Force)
+                    [void](Set-ItemProperty -Path $global:registryPath -Name "DefaultFileSystemWriteGuardSetting" -Value $val -Type DWord -Force)
                 }
                 Write-Log "Successfully applied permission policy: $k = $val"
             } catch {
@@ -1034,13 +1095,13 @@ $saveButton.Add_Click({
     
     if ($sbDropdown.SelectedItem) {
         if ($sbDropdown.SelectedItem -eq "On") {
-            [void](Set-ItemProperty -Path $registryPath -Name "SafeBrowsingProtectionLevel" -Value 1 -Type DWord -Force)
+            [void](Set-ItemProperty -Path $global:registryPath -Name "SafeBrowsingProtectionLevel" -Value 1 -Type DWord -Force)
             Write-Log "Set SafeBrowsingProtectionLevel to 1 (On)"
         } elseif ($sbDropdown.SelectedItem -eq "Off") {
-            [void](Set-ItemProperty -Path $registryPath -Name "SafeBrowsingProtectionLevel" -Value 0 -Type DWord -Force)
+            [void](Set-ItemProperty -Path $global:registryPath -Name "SafeBrowsingProtectionLevel" -Value 0 -Type DWord -Force)
             Write-Log "Set SafeBrowsingProtectionLevel to 0 (Off)"
         } else {
-            Remove-ItemProperty -Path $registryPath -Name "SafeBrowsingProtectionLevel" -ErrorAction SilentlyContinue
+            Remove-ItemProperty -Path $global:registryPath -Name "SafeBrowsingProtectionLevel" -ErrorAction SilentlyContinue
         }
     }
 
@@ -1048,24 +1109,24 @@ $saveButton.Add_Click({
         $mode = $dnsDropdown.SelectedItem
         if ($mode -eq "Automatic") { 
             Set-DnsMode "automatic"
-            Remove-ItemProperty -Path $registryPath -Name "DnsOverHttpsTemplates" -ErrorAction SilentlyContinue
+            Remove-ItemProperty -Path $global:registryPath -Name "DnsOverHttpsTemplates" -ErrorAction SilentlyContinue
         }
         elseif ($mode -eq "Off") { 
             Set-DnsMode "off"
-            Remove-ItemProperty -Path $registryPath -Name "DnsOverHttpsTemplates" -ErrorAction SilentlyContinue
+            Remove-ItemProperty -Path $global:registryPath -Name "DnsOverHttpsTemplates" -ErrorAction SilentlyContinue
         }
         elseif ($mode -eq "Secure") { 
             Set-DnsMode "secure"
-            Remove-ItemProperty -Path $registryPath -Name "DnsOverHttpsTemplates" -ErrorAction SilentlyContinue
+            Remove-ItemProperty -Path $global:registryPath -Name "DnsOverHttpsTemplates" -ErrorAction SilentlyContinue
         }
         elseif ($mode -eq "Custom") {
             Set-DnsMode "secure"
-            [void](Set-ItemProperty -Path $registryPath -Name "DnsOverHttpsTemplates" -Value $dnsTplInput.Text -Type String -Force)
+            [void](Set-ItemProperty -Path $global:registryPath -Name "DnsOverHttpsTemplates" -Value $dnsTplInput.Text -Type String -Force)
             Write-Log "Set DnsOverHttpsTemplates to $($dnsTplInput.Text)"
         }
     } else {
-        Remove-ItemProperty -Path $registryPath -Name "DnsOverHttpsMode" -ErrorAction SilentlyContinue
-        Remove-ItemProperty -Path $registryPath -Name "DnsOverHttpsTemplates" -ErrorAction SilentlyContinue
+        Remove-ItemProperty -Path $global:registryPath -Name "DnsOverHttpsMode" -ErrorAction SilentlyContinue
+        Remove-ItemProperty -Path $global:registryPath -Name "DnsOverHttpsTemplates" -ErrorAction SilentlyContinue
     }
 
     Save-CurrentState
@@ -1073,7 +1134,7 @@ $saveButton.Add_Click({
     Check-DirtyState
     Update-Status "Settings applied successfully!"
 
-    $braveProcess = Get-Process brave -ErrorAction SilentlyContinue
+    $braveProcess = Get-Process -Name "brave" -ErrorAction SilentlyContinue
     if ($braveProcess) {
         $restartPrompt = [System.Windows.Forms.MessageBox]::Show("Settings applied successfully! Brave is currently running. Would you like SlimBrave to automatically close and restart it to apply these changes?", "Restart Brave", [System.Windows.Forms.MessageBoxButtons]::YesNo, [System.Windows.Forms.MessageBoxIcon]::Question)
         if ($restartPrompt -eq "Yes") {
@@ -1105,8 +1166,8 @@ function Reset-AllSettings {
     if ($confirm -eq "Yes") {
         Update-Status "Resetting all settings to default..."
         try {
-            Remove-Item -Path $registryPath -Recurse -Force
-            [void](New-Item -Path $registryPath -Force)
+            Remove-Item -Path $global:registryPath -Recurse -Force
+            [void](New-Item -Path $global:registryPath -Force)
             
             $global:suspendDirtyTracking = $true
             foreach ($cb in $allFeatures) { 
@@ -1146,8 +1207,8 @@ function Reset-AllSettings {
 
 $resetButton.Add_Click({
     if (Reset-AllSettings) {
-        if (-not (Test-Path -Path $registryPath)) {
-            [void](New-Item -Path $registryPath -Force)
+        if (-not (Test-Path -Path $global:registryPath)) {
+            [void](New-Item -Path $global:registryPath -Force)
         }
         Save-CurrentState
         Update-Baseline
