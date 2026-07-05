@@ -797,7 +797,7 @@ function Update-Layout {
     if ($form.ClientSize.Width -eq 0) { return }
 
     $channelLabel.Location = New-Object System.Drawing.Point(20, 24)
-    $channelDropdown.Location = New-Object System.Drawing.Point(140, 22)
+    $channelDropdown.Location = New-Object System.Drawing.Point(($channelLabel.Right + 15), 22)
 
     $totalTopWidth = $presetLabel.Width + $btnPrivacy.Width + $btnSecurity.Width + 20
     $startX = ($form.ClientSize.Width - $totalTopWidth) / 2
@@ -1258,6 +1258,10 @@ $importButton.Add_Click({
 })
 
 Write-Log "SlimBrave UI Loaded successfully."
+
+$form.Add_Shown({
+    $form.ActiveControl = $null
+})
 
 Reload-UIFromRegistry
 Check-StateChanges
