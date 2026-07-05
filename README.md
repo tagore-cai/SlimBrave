@@ -19,7 +19,7 @@ Supported on Windows and MacOS!
 [![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://buymeacoffee.com/SinZZzz)
 
 ## SlimBrave Revived - Windows
-[![Slimbrave-Windows.png](https://i.postimg.cc/WbLJLQgK/Slimbrave-Windows.png)](https://postimg.cc/mhjr7pdN)
+[![Slimbrave-Windows.png](https://i.postimg.cc/5yNPg6pc/Slimbrave-Windows.png)](https://postimg.cc/Pp9zrfBK)
 
 ## SlimBrave Revived - macOS
 [![Slimbrave-mac-OS.png](https://i.postimg.cc/rFXtXvx3/Slimbrave-mac-OS.png)](https://postimg.cc/w32BD4WQ)
