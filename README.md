@@ -18,6 +18,12 @@ Supported on Windows and MacOS!
 
 [![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://buymeacoffee.com/SinZZzz)
 
+## SlimBrave Revived - Windows
+[![Slimbrave-Windows.png](https://i.postimg.cc/WbLJLQgK/Slimbrave-Windows.png)](https://postimg.cc/mhjr7pdN)
+
+## SlimBrave Revived - macOS
+[![Slimbrave-mac-OS.png](https://i.postimg.cc/rFXtXvx3/Slimbrave-mac-OS.png)](https://postimg.cc/w32BD4WQ)
+
 > [!IMPORTANT]
 > This tool is currently not built for Linux.
 > On Linux, it is recommended to use Brave Origin. Brave Origin is free to use on Linux and debloats Brave out of the box.
