@@ -550,7 +550,7 @@ $exportButton.Font = $boldFont
 $exportButton.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
 $exportButton.FlatAppearance.BorderSize = 0
 $exportButton.BackColor = [System.Drawing.Color]::FromArgb(150, 102, 102, 102)
-$exportButton.ForeColor = [System.Drawing.Color]::White
+$exportButton.ForeColor = [System.Drawing.Color]::FromArgb(70, 130, 180)
 $toolTip.SetToolTip($exportButton, "Export the current UI configuration to a JSON file.")
 $form.Controls.Add($exportButton)
 
@@ -560,7 +560,7 @@ $importButton.Font = $boldFont
 $importButton.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
 $importButton.FlatAppearance.BorderSize = 0
 $importButton.BackColor = [System.Drawing.Color]::FromArgb(150, 102, 102, 102)
-$importButton.ForeColor = [System.Drawing.Color]::White
+$importButton.ForeColor = [System.Drawing.Color]::LightSkyBlue
 $toolTip.SetToolTip($importButton, "Import a JSON configuration file into the UI.")
 $form.Controls.Add($importButton)
 
@@ -570,7 +570,7 @@ $pullButton.Font = $boldFont
 $pullButton.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
 $pullButton.FlatAppearance.BorderSize = 0
 $pullButton.BackColor = [System.Drawing.Color]::FromArgb(150, 102, 102, 102)
-$pullButton.ForeColor = [System.Drawing.Color]::White
+$pullButton.ForeColor = [System.Drawing.Color]::FromArgb(251, 84, 43)
 $toolTip.SetToolTip($pullButton, "Pull / Reload the current Brave settings from the registry into the SlimBrave UI.")
 $form.Controls.Add($pullButton)
 
