@@ -78,9 +78,7 @@ jobs:
             artifacts/windows/slimbrave.exe \
             --title "SlimBrave $VERSION" \
             --notes "SlimBrave $VERSION
-
-Choose the right macOS build:
-- SlimBrave-\$VERSION-arm64.dmg - Apple Silicon (M1/M2/M3/M4)
-- SlimBrave-\$VERSION-x86_64.dmg - Intel Mac
-
-Windows: slimbrave.exe (x86_64)"
+            Choose the right macOS build:
+            - SlimBrave-\$VERSION-arm64.dmg - Apple Silicon (M1/M2/M3/M4)
+            - SlimBrave-\$VERSION-x86_64.dmg - Intel Mac
+            Windows: slimbrave.exe (x86_64)"
