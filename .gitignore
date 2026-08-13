@@ -1,0 +1,7 @@
+/target
+*.log
+*.mobileconfig
+.DS_Store
+/dist
+/tools
+/reference/dist

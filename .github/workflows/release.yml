@@ -1,0 +1,86 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-macos:
+    name: Build macOS .app + .dmg
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin, x86_64-apple-darwin
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Package arm64 .app + .dmg
+        run: ./scripts/package_macos.sh --arm64 --dmg
+
+      - name: Package x86_64 .app + .dmg
+        run: ./scripts/package_macos.sh --x86_64 --dmg
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos
+          path: |
+            dist/SlimBrave-arm64.app
+            dist/SlimBrave-x86_64.app
+            dist/*.dmg
+
+  build-windows:
+    name: Build Windows binary
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Build release
+        run: cargo build --release
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: target/release/slimbrave.exe
+
+  release:
+    name: Publish GitHub Release
+    needs: [build-macos, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          gh release create "$GITHUB_REF_NAME" \
+            artifacts/macos/SlimBrave-*-arm64.dmg \
+            artifacts/macos/SlimBrave-*-x86_64.dmg \
+            artifacts/windows/slimbrave.exe \
+            --title "SlimBrave $VERSION" \
+            --notes "SlimBrave $VERSION
+
+Choose the right macOS build:
+- SlimBrave-\$VERSION-arm64.dmg - Apple Silicon (M1/M2/M3/M4)
+- SlimBrave-\$VERSION-x86_64.dmg - Intel Mac
+
+Windows: slimbrave.exe (x86_64)"

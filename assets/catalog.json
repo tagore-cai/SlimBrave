@@ -1,0 +1,723 @@
+{
+  "features": [
+    {
+      "key": "MetricsReportingEnabled",
+      "name": "Disable Metrics Reporting",
+      "tooltip": "Stops Brave from sending anonymous usage and crash reports.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "telemetry"
+    },
+    {
+      "key": "SafeBrowsingExtendedReportingEnabled",
+      "name": "Disable Safe Browsing Reporting",
+      "tooltip": "Stops Brave from sending extended Safe Browsing data back to servers.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "telemetry"
+    },
+    {
+      "key": "UrlKeyedAnonymizedDataCollectionEnabled",
+      "name": "Disable URL Data Collection",
+      "tooltip": "Stops sending anonymized URLs to help improve the browser.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "telemetry"
+    },
+    {
+      "key": "FeedbackSurveysEnabled",
+      "name": "Disable Feedback Surveys",
+      "tooltip": "Disables proactive feedback survey prompts.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "telemetry"
+    },
+    {
+      "key": "BraveP3AEnabled",
+      "name": "Disable P3A Telemetry",
+      "tooltip": "Disables Privacy-Preserving Product Analytics completely.",
+      "value": false,
+      "windows_value": "Disabled",
+      "privacy": true,
+      "security": true,
+      "section": "telemetry"
+    },
+    {
+      "key": "BraveStatsPingEnabled",
+      "name": "Disable Daily Stats Ping",
+      "tooltip": "Stops the daily active user ping.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "telemetry"
+    },
+    {
+      "key": "BraveWebDiscoveryEnabled",
+      "name": "Disable Web Discovery",
+      "tooltip": "Prevents anonymous search/browsing data from being sent to Brave Search.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "telemetry"
+    },
+    {
+      "key": "AutofillAddressEnabled",
+      "name": "Disable Autofill (Addresses)",
+      "tooltip": "Disables saving and autofilling addresses.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": false,
+      "section": "privacy"
+    },
+    {
+      "key": "AutofillCreditCardEnabled",
+      "name": "Disable Autofill (Credit Cards)",
+      "tooltip": "Disables saving and autofilling credit cards.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": false,
+      "section": "privacy"
+    },
+    {
+      "key": "PasswordManagerEnabled",
+      "name": "Disable Password Manager",
+      "tooltip": "Disables the built-in password manager.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": false,
+      "section": "privacy"
+    },
+    {
+      "key": "BrowserSignin",
+      "name": "Disable Browser Sign-in",
+      "tooltip": "Prevents syncing your data to cloud accounts.",
+      "value": 0,
+      "windows_value": null,
+      "privacy": true,
+      "security": false,
+      "section": "privacy"
+    },
+    {
+      "key": "WebRtcIPHandling",
+      "name": "Disable WebRTC IP Leak",
+      "tooltip": "Prevents your real IP address from leaking when using a VPN.",
+      "value": "disable_non_proxied_udp",
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "privacy"
+    },
+    {
+      "key": "QuicAllowed",
+      "name": "Disable QUIC Protocol",
+      "tooltip": "Forces standard TCP, stopping UDP firewall bypasses and tracking.",
+      "value": false,
+      "windows_value": null,
+      "privacy": false,
+      "security": true,
+      "section": "privacy"
+    },
+    {
+      "key": "BlockThirdPartyCookies",
+      "name": "Block Third Party Cookies",
+      "tooltip": "Blocks all third-party tracking cookies.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "privacy"
+    },
+    {
+      "key": "EnableDoNotTrack",
+      "name": "Enable Do Not Track",
+      "tooltip": "Sends a Do Not Track request with your browsing traffic.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "privacy"
+    },
+    {
+      "key": "GlobalPrivacyControlEnabled",
+      "name": "Enable Global Privacy Control",
+      "tooltip": "Enables GPC to tell sites not to sell or share your data.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "privacy"
+    },
+    {
+      "key": "BraveDeAMPEnabled",
+      "name": "Enable De-AMP",
+      "tooltip": "Bypasses Google AMP pages and redirects you to the original website.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "privacy"
+    },
+    {
+      "key": "BraveDebouncingEnabled",
+      "name": "Enable Debouncing",
+      "tooltip": "Skips known tracking redirect hops before you reach your destination.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "privacy"
+    },
+    {
+      "key": "BraveTrackersStrippingEnabled",
+      "name": "Strip URL Trackers",
+      "tooltip": "Automatically removes tracking parameters from URLs.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "privacy"
+    },
+    {
+      "key": "ReduceAcceptLanguage",
+      "name": "Reduce Language Fingerprinting",
+      "tooltip": "Reduces the language data sent to sites to prevent fingerprinting.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "privacy"
+    },
+    {
+      "key": "ForceGoogleSafeSearch",
+      "name": "Force Google SafeSearch",
+      "tooltip": "Filters explicit search results.",
+      "value": true,
+      "windows_value": null,
+      "privacy": false,
+      "security": true,
+      "section": "privacy"
+    },
+    {
+      "key": "IPFSEnabled",
+      "name": "Disable IPFS",
+      "tooltip": "Stops peer-to-peer background connections to unknown nodes.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "privacy"
+    },
+    {
+      "key": "IncognitoModeAvailability",
+      "name": "Force Incognito Mode",
+      "tooltip": "Forces the browser to always open in Incognito Mode.",
+      "value": 2,
+      "windows_value": null,
+      "privacy": false,
+      "security": false,
+      "section": "privacy"
+    },
+    {
+      "key": "PromptForDownloadLocation",
+      "name": "Force Download Prompts",
+      "tooltip": "Forces Brave to ask where to save a file before downloading, preventing drive-by downloads.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "privacy"
+    },
+    {
+      "key": "ClearBrowsingDataOnExitList",
+      "name": "Clear Data on Exit",
+      "tooltip": "Wipes all cookies, cache, and browsing history the moment the browser closes.",
+      "value": [
+        "browsing_history",
+        "download_history",
+        "cookies_and_other_site_data",
+        "cached_images_and_files",
+        "password_signin",
+        "autofill",
+        "site_settings",
+        "hosted_app_data"
+      ],
+      "windows_value": null,
+      "privacy": true,
+      "security": false,
+      "section": "privacy"
+    },
+    {
+      "key": "HttpsOnlyMode",
+      "name": "Force HTTPS-Only Mode",
+      "tooltip": "Strictly upgrades all connections to HTTPS and blocks unencrypted HTTP traffic.",
+      "value": "force_enabled",
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "privacy"
+    },
+    {
+      "key": "BraveRewardsDisabled",
+      "name": "Disable Brave Rewards",
+      "tooltip": "Completely disables the Brave Crypto Rewards system.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "brave"
+    },
+    {
+      "key": "BraveWalletDisabled",
+      "name": "Disable Brave Wallet",
+      "tooltip": "Disables the built-in Brave Crypto Wallet.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "brave"
+    },
+    {
+      "key": "BraveVPNDisabled",
+      "name": "Disable Brave VPN",
+      "tooltip": "Removes the Brave VPN integration and prompts.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "brave"
+    },
+    {
+      "key": "BraveAIChatEnabled",
+      "name": "Disable Brave AI Chat",
+      "tooltip": "Disables Brave Leo (AI Chat) integration.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "brave"
+    },
+    {
+      "key": "TorDisabled",
+      "name": "Disable Tor",
+      "tooltip": "Disables built-in Tor window support.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "brave"
+    },
+    {
+      "key": "SyncDisabled",
+      "name": "Disable Sync",
+      "tooltip": "Disables Brave Sync functionality across devices.",
+      "value": true,
+      "windows_value": null,
+      "privacy": false,
+      "security": true,
+      "section": "brave"
+    },
+    {
+      "key": "BraveNewsDisabled",
+      "name": "Disable Brave News",
+      "tooltip": "Removes the Brave News feed bloat from the New Tab page.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "brave"
+    },
+    {
+      "key": "BraveTalkDisabled",
+      "name": "Disable Brave Talk",
+      "tooltip": "Removes the built-in video calling integration.",
+      "value": true,
+      "windows_value": "Disabled",
+      "privacy": true,
+      "security": true,
+      "section": "brave"
+    },
+    {
+      "key": "BraveSpeedreaderEnabled",
+      "name": "Disable Speedreader",
+      "tooltip": "Completely disables the Speedreader feature, reader mode, and automatic prompts.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "brave"
+    },
+    {
+      "key": "BraveWaybackMachineEnabled",
+      "name": "Disable Wayback Machine Prompts",
+      "tooltip": "Stops Brave from asking to search the Internet Archive when you hit a 404 error.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "brave"
+    },
+    {
+      "key": "BackgroundModeEnabled",
+      "name": "Disable Background Mode",
+      "tooltip": "Prevents extensions/apps from running after the browser is closed.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "perf"
+    },
+    {
+      "key": "MediaRecommendationsEnabled",
+      "name": "Disable Media Recommendations",
+      "tooltip": "Disables media recommendations to save memory.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": false,
+      "section": "perf"
+    },
+    {
+      "key": "ShoppingListEnabled",
+      "name": "Disable Shopping List",
+      "tooltip": "Disables the shopping list feature.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": false,
+      "section": "perf"
+    },
+    {
+      "key": "AlwaysOpenPdfExternally",
+      "name": "Always Open PDF Externally",
+      "tooltip": "Forces PDFs to download and open in your system viewer instead of the browser.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "perf"
+    },
+    {
+      "key": "TranslateEnabled",
+      "name": "Disable Translate",
+      "tooltip": "Disables automatic translation prompts.",
+      "value": false,
+      "windows_value": null,
+      "privacy": false,
+      "security": false,
+      "section": "perf"
+    },
+    {
+      "key": "SpellcheckEnabled",
+      "name": "Disable Spellcheck",
+      "tooltip": "Disables the built-in spellchecker to save CPU cycles.",
+      "value": false,
+      "windows_value": null,
+      "privacy": false,
+      "security": false,
+      "section": "perf"
+    },
+    {
+      "key": "PromotionsEnabled",
+      "name": "Disable Promotions",
+      "tooltip": "Disables Brave promotional notifications.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": false,
+      "section": "perf"
+    },
+    {
+      "key": "SearchSuggestEnabled",
+      "name": "Disable Search Suggestions",
+      "tooltip": "Disables predictive search suggestions in the URL bar.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": false,
+      "section": "perf"
+    },
+    {
+      "key": "PrintingEnabled",
+      "name": "Disable Printing",
+      "tooltip": "Disables the browser print function.",
+      "value": false,
+      "windows_value": null,
+      "privacy": false,
+      "security": false,
+      "section": "perf"
+    },
+    {
+      "key": "DefaultBrowserSettingEnabled",
+      "name": "Disable Default Browser Prompt",
+      "tooltip": "Stops Brave from asking to be the default browser.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": false,
+      "section": "perf"
+    },
+    {
+      "key": "DeveloperToolsDisabled",
+      "name": "Disable Developer Tools",
+      "tooltip": "Disables F12 / Inspect Element.",
+      "value": true,
+      "windows_value": null,
+      "privacy": false,
+      "security": true,
+      "section": "perf"
+    },
+    {
+      "key": "BravePlaylistEnabled",
+      "name": "Disable Brave Playlist",
+      "tooltip": "Removes the Brave Playlist media feature.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "perf"
+    }
+  ],
+  "permissions": [
+    {
+      "key": "DefaultGeolocationSetting",
+      "name": "Location",
+      "tooltip": "Allows sites to request your physical location.",
+      "options": [
+        "Not Set",
+        "Ask",
+        "Block",
+        "Allow"
+      ]
+    },
+    {
+      "key": "DefaultVideoCaptureSetting",
+      "name": "Camera",
+      "tooltip": "Allows sites to record video via your webcam.",
+      "options": [
+        "Not Set",
+        "Ask",
+        "Block"
+      ]
+    },
+    {
+      "key": "DefaultAudioCaptureSetting",
+      "name": "Microphone",
+      "tooltip": "Allows sites to record audio via your microphone.",
+      "options": [
+        "Not Set",
+        "Ask",
+        "Block"
+      ]
+    },
+    {
+      "key": "DefaultNotificationsSetting",
+      "name": "Notifications",
+      "tooltip": "Allows sites to send you native desktop push notifications.",
+      "options": [
+        "Not Set",
+        "Ask",
+        "Block",
+        "Allow"
+      ]
+    },
+    {
+      "key": "DefaultJavaScriptSetting",
+      "name": "JavaScript",
+      "tooltip": "Allows sites to run interactive scripts. Blocking this breaks almost all websites.",
+      "options": [
+        "Not Set",
+        "Allow",
+        "Block"
+      ]
+    },
+    {
+      "key": "DefaultImagesSetting",
+      "name": "Images",
+      "tooltip": "Allows sites to load and display images.",
+      "options": [
+        "Not Set",
+        "Allow",
+        "Block"
+      ]
+    },
+    {
+      "key": "DefaultPopupsSetting",
+      "name": "Pop-ups and Redirects",
+      "tooltip": "Allows sites to open new windows or redirect you without your input.",
+      "options": [
+        "Not Set",
+        "Block",
+        "Allow"
+      ]
+    },
+    {
+      "key": "DefaultWebUsbGuardSetting",
+      "name": "USB Devices",
+      "tooltip": "Allows sites to request direct connection to your plugged-in USB devices.",
+      "options": [
+        "Not Set",
+        "Ask",
+        "Block"
+      ]
+    },
+    {
+      "key": "DefaultSerialGuardSetting",
+      "name": "Serial Ports",
+      "tooltip": "Allows sites to request connection to hardware via serial ports.",
+      "options": [
+        "Not Set",
+        "Ask",
+        "Block"
+      ]
+    },
+    {
+      "key": "DefaultWebHidGuardSetting",
+      "name": "HID Devices",
+      "tooltip": "Allows sites to request access to Human Interface Devices (e.g. controllers).",
+      "options": [
+        "Not Set",
+        "Ask",
+        "Block"
+      ]
+    },
+    {
+      "key": "DefaultFileSystemReadGuardSetting",
+      "name": "File Editing",
+      "tooltip": "Allows sites to read and save files directly to your local file system.",
+      "options": [
+        "Not Set",
+        "Ask",
+        "Block"
+      ]
+    },
+    {
+      "key": "DefaultClipboardSetting",
+      "name": "Clipboard",
+      "tooltip": "Allows sites to read text and images copied to your clipboard.",
+      "options": [
+        "Not Set",
+        "Ask",
+        "Block"
+      ]
+    },
+    {
+      "key": "DefaultWindowPlacementSetting",
+      "name": "Window Management",
+      "tooltip": "Allows sites to open windows on specific monitors or in fullscreen.",
+      "options": [
+        "Not Set",
+        "Ask",
+        "Block",
+        "Allow"
+      ]
+    },
+    {
+      "key": "DefaultLocalFontsSetting",
+      "name": "Local Fonts",
+      "tooltip": "Allows sites to fingerprint your device based on locally installed fonts.",
+      "options": [
+        "Not Set",
+        "Ask",
+        "Block"
+      ]
+    },
+    {
+      "key": "PaymentMethodQueryEnabled",
+      "name": "Payment Handlers",
+      "tooltip": "Allows sites to check if you have local payment apps installed.",
+      "options": [
+        "Not Set",
+        "Block",
+        "Allow"
+      ]
+    }
+  ],
+  "presets": {
+    "privacy": [
+      "MetricsReportingEnabled",
+      "SafeBrowsingExtendedReportingEnabled",
+      "UrlKeyedAnonymizedDataCollectionEnabled",
+      "FeedbackSurveysEnabled",
+      "BraveP3AEnabled",
+      "BraveStatsPingEnabled",
+      "BraveWebDiscoveryEnabled",
+      "AutofillAddressEnabled",
+      "AutofillCreditCardEnabled",
+      "PasswordManagerEnabled",
+      "BrowserSignin",
+      "WebRtcIPHandling",
+      "BlockThirdPartyCookies",
+      "EnableDoNotTrack",
+      "IPFSEnabled",
+      "PromptForDownloadLocation",
+      "ClearBrowsingDataOnExitList",
+      "HttpsOnlyMode",
+      "GlobalPrivacyControlEnabled",
+      "BraveDeAMPEnabled",
+      "BraveDebouncingEnabled",
+      "BraveTrackersStrippingEnabled",
+      "ReduceAcceptLanguage",
+      "BraveRewardsDisabled",
+      "BraveWalletDisabled",
+      "BraveVPNDisabled",
+      "BraveAIChatEnabled",
+      "TorDisabled",
+      "BraveNewsDisabled",
+      "BraveTalkDisabled",
+      "BraveSpeedreaderEnabled",
+      "BraveWaybackMachineEnabled",
+      "BackgroundModeEnabled",
+      "MediaRecommendationsEnabled",
+      "ShoppingListEnabled",
+      "AlwaysOpenPdfExternally",
+      "PromotionsEnabled",
+      "SearchSuggestEnabled",
+      "DefaultBrowserSettingEnabled",
+      "BravePlaylistEnabled"
+    ],
+    "security": [
+      "MetricsReportingEnabled",
+      "SafeBrowsingExtendedReportingEnabled",
+      "UrlKeyedAnonymizedDataCollectionEnabled",
+      "FeedbackSurveysEnabled",
+      "BraveP3AEnabled",
+      "BraveStatsPingEnabled",
+      "BraveWebDiscoveryEnabled",
+      "WebRtcIPHandling",
+      "QuicAllowed",
+      "BlockThirdPartyCookies",
+      "EnableDoNotTrack",
+      "ForceGoogleSafeSearch",
+      "IPFSEnabled",
+      "PromptForDownloadLocation",
+      "HttpsOnlyMode",
+      "BraveRewardsDisabled",
+      "BraveWalletDisabled",
+      "BraveVPNDisabled",
+      "BraveAIChatEnabled",
+      "TorDisabled",
+      "SyncDisabled",
+      "BraveNewsDisabled",
+      "BraveTalkDisabled",
+      "BraveSpeedreaderEnabled",
+      "BraveWaybackMachineEnabled",
+      "BackgroundModeEnabled",
+      "AlwaysOpenPdfExternally",
+      "DeveloperToolsDisabled",
+      "BravePlaylistEnabled"
+    ]
+  }
+}
