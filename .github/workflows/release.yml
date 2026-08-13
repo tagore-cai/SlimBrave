@@ -16,7 +16,7 @@ jobs:
     name: Build macOS .app + .dmg
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -31,7 +31,7 @@ jobs:
         run: ./scripts/package_macos.sh --x86_64 --dmg
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: macos
           path: |
@@ -43,7 +43,7 @@ jobs:
     name: Build Windows binary
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: dtolnay/rust-toolchain@stable
 
@@ -53,7 +53,7 @@ jobs:
         run: cargo build --release
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: windows
           path: target/release/slimbrave.exe
@@ -63,7 +63,9 @@ jobs:
     needs: [build-macos, build-windows]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v5
+
+      - uses: actions/download-artifact@v5
         with:
           path: artifacts
 
