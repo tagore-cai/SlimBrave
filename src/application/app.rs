@@ -23,6 +23,8 @@ pub(crate) struct AppConfig {
     theme: String,
     #[serde(default)]
     write_level: String,
+    #[serde(default)]
+    lang: String,
 }
 
 impl Default for AppConfig {
@@ -30,6 +32,7 @@ impl Default for AppConfig {
         Self {
             theme: "dark".to_owned(),
             write_level: "user".to_owned(),
+            lang: String::new(),
         }
     }
 }
@@ -80,7 +83,13 @@ impl SlimBraveApp {
             dry_run: false,
             pending: None,
             pending_message: String::new(),
-            i18n: I18n::new(),
+            i18n: Self::load_config()
+                .and_then(|config| match config.lang.as_str() {
+                    "en" => Some(I18n::with_lang(crate::infrastructure::i18n::Lang::En)),
+                    "zh" => Some(I18n::with_lang(crate::infrastructure::i18n::Lang::Zh)),
+                    _ => None,
+                })
+                .unwrap_or_default(),
             theme_pref,
             theme_overrides: Self::load_theme_overrides(),
             last_theme: None,
@@ -241,6 +250,10 @@ impl SlimBraveApp {
             write_level: match self.write_level {
                 WriteLevel::User => "user".to_owned(),
                 WriteLevel::Machine => "machine".to_owned(),
+            },
+            lang: match self.i18n.lang() {
+                crate::infrastructure::i18n::Lang::En => "en".to_owned(),
+                crate::infrastructure::i18n::Lang::Zh => "zh".to_owned(),
             },
         };
         let Ok(json) = serde_json::to_string_pretty(&config) else {

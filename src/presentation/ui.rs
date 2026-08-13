@@ -348,6 +348,7 @@ impl eframe::App for SlimBraveApp {
                             });
                         if selected_lang != self.i18n.lang() {
                             self.i18n.set_lang(selected_lang);
+                            self.save_config();
                         }
                         let mut selected_theme = self.theme_pref;
                         egui::ComboBox::from_id_salt("theme")

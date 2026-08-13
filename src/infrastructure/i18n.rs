@@ -87,8 +87,7 @@ impl I18n {
         }
     }
 
-    #[cfg(test)]
-    pub fn with_lang(lang: Lang) -> Self {
+    pub(crate) fn with_lang(lang: Lang) -> Self {
         Self {
             bundle: build_bundle(lang),
             lang,
