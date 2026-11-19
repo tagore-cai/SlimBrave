@@ -46,6 +46,8 @@ impl SlimBraveApp {
         format!("{body}{}", self.i18n.suggestion_text(privacy, security))
     }
 
+    /// 渲染一个策略分组。若当前浏览器下该分组没有任何适用策略，整组（含标题）
+    /// 都不渲染——避免 Chrome / Edge 下出现空的「Brave 功能」标题。
     pub(crate) fn feature_section(
         &mut self,
         ui: &mut egui::Ui,
@@ -53,20 +55,30 @@ impl SlimBraveApp {
         title_key: &str,
         section: &str,
     ) {
+        let entries: Vec<(usize, String, String)> = catalog()
+            .features_for(self.browser)
+            .filter(|(_, feature)| feature.section == section)
+            .map(|(index, feature)| {
+                (
+                    index,
+                    self.display_name(&feature.key, &feature.name),
+                    self.display_tooltip(
+                        &feature.key,
+                        &feature.tooltip,
+                        feature.privacy,
+                        feature.security,
+                    ),
+                )
+            })
+            .collect();
+        if entries.is_empty() {
+            return;
+        }
+
         ui.add_space(8.0);
         theme.section_title(ui, &self.i18n.t(title_key));
         ui.add_space(4.0);
-        for (index, feature) in catalog().features_for(self.browser) {
-            if feature.section != section {
-                continue;
-            }
-            let label = self.display_name(&feature.key, &feature.name);
-            let tooltip = self.display_tooltip(
-                &feature.key,
-                &feature.tooltip,
-                feature.privacy,
-                feature.security,
-            );
+        for (index, label, tooltip) in entries {
             ui.checkbox(&mut self.state.checked[index], label)
                 .on_hover_text(tooltip);
         }

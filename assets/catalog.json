@@ -327,7 +327,7 @@
       "windows_value": null,
       "privacy": false,
       "security": true,
-      "section": "brave"
+      "section": "privacy"
     },
     {
       "key": "BraveNewsDisabled",
@@ -488,6 +488,126 @@
       "privacy": true,
       "security": true,
       "section": "perf"
+    },
+    {
+      "key": "EdgeCopilotEnabled",
+      "name": "Disable Copilot",
+      "tooltip": "Disables the Copilot integration in the Edge sidebar.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "edge"
+    },
+    {
+      "key": "EdgeWorkspacesEnabled",
+      "name": "Disable Workspaces",
+      "tooltip": "Disables Edge Workspaces for shared browsing sessions.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": false,
+      "section": "edge"
+    },
+    {
+      "key": "EdgeBlockSignInEnabled",
+      "name": "Block sign-in to Edge",
+      "tooltip": "Prevents signing in to Edge with an account.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "edge"
+    },
+    {
+      "key": "EdgeDefaultProfileEnabled",
+      "name": "Disable automatic default profile",
+      "tooltip": "Stops Edge from auto-creating a default profile.",
+      "value": true,
+      "windows_value": null,
+      "privacy": false,
+      "security": false,
+      "section": "edge"
+    },
+    {
+      "key": "EdgeAllowedAccountOnly",
+      "name": "Restrict sign-in to allowed accounts",
+      "tooltip": "Restricts Edge sign-in to accounts on the allowed list.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "edge"
+    },
+    {
+      "key": "EdgeManagementEnabled",
+      "name": "Disable Edge management",
+      "tooltip": "Disables Microsoft Edge management features.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "edge"
+    },
+    {
+      "key": "EdgeDisableDialProtocolForCastDiscovery",
+      "name": "Disable DIAL cast discovery",
+      "tooltip": "Disables DIAL protocol for cast device discovery.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": false,
+      "section": "edge"
+    },
+    {
+      "key": "EdgeEntraCopilotPageContext",
+      "name": "Allow Copilot page context for Entra profiles",
+      "tooltip": "Lets Copilot in the Edge sidebar access page content, history and transcripts for Entra accounts.",
+      "value": false,
+      "windows_value": null,
+      "privacy": true,
+      "security": true,
+      "section": "edge"
+    },
+    {
+      "key": "EdgeOpenExternalLinksWithAppSpecifiedProfile",
+      "name": "Prioritize app-specified profile for external links",
+      "tooltip": "Lets an app such as Teams or Outlook choose the profile for external links.",
+      "value": true,
+      "windows_value": null,
+      "privacy": false,
+      "security": false,
+      "section": "edge"
+    },
+    {
+      "key": "EdgeManagementExtensionsFeedbackEnabled",
+      "name": "Enable management extension feedback",
+      "tooltip": "Lets Edge send data about blocked extensions to the Edge management service.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": false,
+      "section": "edge"
+    },
+    {
+      "key": "EdgeManagementPolicyOverridesPlatformPolicy",
+      "name": "Cloud management overrides platform policy",
+      "tooltip": "Lets cloud-based Edge management policies win over conflicting platform policies.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": false,
+      "section": "edge"
+    },
+    {
+      "key": "EdgeManagementUserPolicyOverridesCloudMachinePolicy",
+      "name": "Cloud user policy overrides local user policy",
+      "tooltip": "Lets cloud-based Edge management user policies win over conflicting local user policies.",
+      "value": true,
+      "windows_value": null,
+      "privacy": true,
+      "security": false,
+      "section": "edge"
     }
   ],
   "permissions": [

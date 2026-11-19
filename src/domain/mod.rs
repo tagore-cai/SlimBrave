@@ -18,6 +18,7 @@ pub enum PlatformKind {
 pub enum Browser {
     Chrome,
     Brave,
+    Edge,
 }
 
 /// 仅 Brave 支持的策略键。
@@ -26,6 +27,25 @@ pub enum Browser {
 /// `TorDisabled`（Brave 内置 Tor 窗口）是 Brave 特有功能，均不在 Chromium
 /// 的 `components/policy/resources/templates/policy_definitions` 标准定义中。
 /// Chrome 不应显示或写入这些键。
+/// 仅 Microsoft Edge 支持的策略键。
+///
+/// 依据：Microsoft Edge 官方策略文档中 `Edge*` 前缀策略。Edge 专属项不写入
+/// Brave / Chrome；其策略路径全渠道共用，与 Brave/Chrome 的每渠道独立不同。
+pub const EDGE_ONLY_KEYS: &[&str] = &[
+    "EdgeCopilotEnabled",
+    "EdgeWorkspacesEnabled",
+    "EdgeBlockSignInEnabled",
+    "EdgeDefaultProfileEnabled",
+    "EdgeAllowedAccountOnly",
+    "EdgeManagementEnabled",
+    "EdgeDisableDialProtocolForCastDiscovery",
+    "EdgeEntraCopilotPageContext",
+    "EdgeOpenExternalLinksWithAppSpecifiedProfile",
+    "EdgeManagementExtensionsFeedbackEnabled",
+    "EdgeManagementPolicyOverridesPlatformPolicy",
+    "EdgeManagementUserPolicyOverridesCloudMachinePolicy",
+];
+
 pub const BRAVE_ONLY_KEYS: &[&str] = &[
     "BraveP3AEnabled",
     "BraveStatsPingEnabled",
@@ -51,6 +71,7 @@ impl Browser {
         match self {
             Browser::Chrome => "catalog.remote-chrome.json",
             Browser::Brave => "catalog.remote-brave.json",
+            Browser::Edge => "catalog.remote-edge.json",
         }
     }
 
@@ -59,14 +80,18 @@ impl Browser {
         match self {
             Browser::Chrome => "browser-chrome",
             Browser::Brave => "browser-brave",
+            Browser::Edge => "browser-edge",
         }
     }
 
-    /// 该策略键是否适用于本浏览器。Brave 支持全部策略，Chrome 不含 Brave 专属项。
+    /// 该策略键是否适用于本浏览器。
+    /// Brave / Chrome 共享 Chromium 通用策略；Edge 有自己的专属集。
+    /// 三者的专属键互不包含：Chrome 排除 Brave 与 Edge 专属，Brave 排除 Edge 专属，Edge 排除 Brave 专属。
     pub fn supports_policy(self, key: &str) -> bool {
         match self {
-            Browser::Brave => true,
-            Browser::Chrome => !BRAVE_ONLY_KEYS.contains(&key),
+            Browser::Brave => !EDGE_ONLY_KEYS.contains(&key),
+            Browser::Chrome => !BRAVE_ONLY_KEYS.contains(&key) && !EDGE_ONLY_KEYS.contains(&key),
+            Browser::Edge => !BRAVE_ONLY_KEYS.contains(&key),
         }
     }
 }
@@ -110,8 +135,33 @@ mod browser_policy_tests {
     }
 
     #[test]
+    fn edge_rejects_other_browsers_exclusive_policies() {
+        for key in BRAVE_ONLY_KEYS {
+            assert!(
+                !Browser::Edge.supports_policy(key),
+                "{key} must be hidden in Edge"
+            );
+        }
+        for key in EDGE_ONLY_KEYS {
+            assert!(
+                !Browser::Brave.supports_policy(key),
+                "{key} must be hidden in Brave"
+            );
+            assert!(
+                !Browser::Chrome.supports_policy(key),
+                "{key} must be hidden in Chrome"
+            );
+            assert!(
+                Browser::Edge.supports_policy(key),
+                "{key} must be shown in Edge"
+            );
+        }
+    }
+
+    #[test]
     fn i18n_key_matches_fluent_message_keys() {
         assert_eq!(Browser::Brave.i18n_key(), "browser-brave");
         assert_eq!(Browser::Chrome.i18n_key(), "browser-chrome");
+        assert_eq!(Browser::Edge.i18n_key(), "browser-edge");
     }
 }

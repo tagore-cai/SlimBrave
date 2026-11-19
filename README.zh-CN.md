@@ -48,10 +48,10 @@
 
 ### 核心策略管理
 
-- [x] **48 项精选策略 + 15 项站点权限** —— 分为遥测 / 隐私与安全 / Brave 功能 / 性能与臃肿四组，英文名与 Python 原版一致
+- [x] **60 项精选策略 + 15 项站点权限** —— 分为遥测 / 隐私与安全 / Brave 功能 / 性能 / Edge 功能五组，英文名与 Python 原版一致
 - [x] **数据驱动的目录** —— 通过 JSON（`assets/catalog.json` + 用户覆盖层）增删策略，无需改代码
 - [x] **快捷预设** —— 高隐私 / 高安全
-- [x] **从 Brave 拉取设置** —— 回读当前生效的策略（受管偏好 + 遗留 defaults 域）
+- [x] **按当前浏览器拉取设置** —— 回读所选浏览器的生效策略，并显示回执（条数、渠道、时间、次数）
 - [x] **策略管理窗口** —— 随时启用/禁用任意策略
 - [x] **导入 / 导出设置** —— JSON 格式，与 Python 版格式兼容
 - [x] **状态持久化** —— 启动时恢复上次应用的设置
@@ -60,8 +60,8 @@
 
 - [x] **macOS** —— `.mobileconfig` 配置描述文件（官方支持的强制策略机制）
 - [x] **Windows** —— 注册表策略（HKCU，无需提权）
-- [x] **双浏览器** —— Brave（Release/Beta/Dev/Nightly）与 Chrome（Stable/Beta/Dev/Canary）
-- [x] **应用前关闭 Brave** —— 优雅退出 → TERM → KILL 分级（macOS）/ taskkill（Windows）
+- [x] **三浏览器** —— Brave（Release/Beta/Dev/Nightly）、Chrome（Stable/Beta/Dev/Canary）、Edge（单一共享策略渠道）
+- [x] **应用前关闭浏览器** —— 优雅退出 → TERM → KILL 分级（macOS）/ 按浏览器进程名 taskkill（Windows）
 - [x] **轻量重置** —— 移除描述文件 + 受管 plist + 遗留域名键
 
 ### 数据与智能
@@ -88,7 +88,7 @@
 ```sh
 cargo run          # 开发模式
 cargo run --release
-cargo test         # 43 项测试
+cargo test         # 56 项测试
 ```
 
 ### macOS 快速上手
@@ -97,7 +97,7 @@ cargo test         # 43 项测试
 2. 勾选策略（或使用高隐私 / 高安全预设）。
 3. 点击**应用设置** —— 生成并打开 `.mobileconfig` 配置描述文件。
 4. 在**系统设置 → 隐私与安全性 → 描述文件**中安装（每个渠道一次）。
-5. 点击**从 Brave 拉取设置** —— 顶栏徽标变绿即表示描述文件已激活。
+5. 点击**从当前浏览器拉取设置** —— 状态行显示回执（策略条数、渠道、时间、第几次）；macOS 还会显示描述文件状态。
 
 > 描述文件由 macOS 管理：再次应用即更新，**重置所有设置**或系统设置中可移除。
 
@@ -195,12 +195,18 @@ tools/                         fetch_policies.py（Windows 备用）
 
 - Brave：官方 `policy_templates.zip`（ADMX/ADML）+ Chromium 定义
 - Chrome：Chromium `policy_definitions`（顶栏切换浏览器）
+- Edge：通用策略用 Chromium 定义；Edge 专属策略内置在 `catalog.json` + i18n 中，
+  因微软模板是 JS 页面动态生成的 CAB、无稳定直链，不依赖网络拉取
 
-策略列表随所选浏览器变化：Brave 显示全部 48 项（含 17 项 Brave 专属，如
-`BraveRewardsDisabled`、`IPFSEnabled`、`TorDisabled`），Chrome 只显示 31 项
-Chromium 通用策略。过滤统一作用在界面渲染、应用计划、预设、快照导入与模板拉取
-（`Browser::supports_policy` / `Catalog::features_for`），确保 Brave 专属键不会被
-写入 Chrome。
+策略列表随所选浏览器变化：基础目录 48 项，加 12 项 Edge 专属（如
+`EdgeCopilotEnabled`、`EdgeWorkspacesEnabled`）共 60 项。Brave 显示 48 项
+（含 17 项 Brave 专属，如 `BraveRewardsDisabled`、`IPFSEnabled`、`TorDisabled`），
+Chrome 显示 31 项通用策略，Edge 显示 31 项通用 + 7 项专属。过滤统一作用在界面
+渲染、应用计划、预设、快照导入与模板拉取（`Browser::supports_policy` /
+`Catalog::features_for`），确保专属键不会跨浏览器串写。
+
+Edge 使用**单一逻辑渠道**：与 Brave/Chrome 不同，Edge 的所有渠道共用一个策略域
+（macOS `com.microsoft.Edge`、Windows `HKLM/HKCU\SOFTWARE\Policies\Microsoft\Edge`）。
 
 ---
 

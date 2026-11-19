@@ -178,7 +178,8 @@ const REFERENCE: &[(&str, &str, bool, bool)] = &[
 #[test]
 fn builtin_catalog_matches_reference() {
     let catalog = Catalog::from_json(BUILTIN_CATALOG).expect("valid builtin catalog");
-    assert_eq!(catalog.features.len(), REFERENCE.len());
+    // 基准表覆盖 48 条 Chromium 通用策略；Edge 专属策略附在其后单独校验。
+    assert_eq!(catalog.features.len(), REFERENCE.len() + 12);
     for (expected, actual) in REFERENCE.iter().zip(catalog.features.iter()) {
         assert_eq!(actual.key, expected.0, "key mismatch");
         assert_eq!(actual.name, expected.1, "name mismatch for {}", actual.key);
@@ -205,9 +206,10 @@ fn catalog_counts_match_reference() {
             .count()
     };
     assert_eq!(count("telemetry"), 7);
-    assert_eq!(count("privacy"), 19);
-    assert_eq!(count("brave"), 10);
+    assert_eq!(count("privacy"), 20);
+    assert_eq!(count("brave"), 9);
     assert_eq!(count("perf"), 12);
+    assert_eq!(count("edge"), 12);
 }
 
 #[test]
@@ -254,7 +256,7 @@ fn user_layer_overrides_adds_and_removes() {
     let custom = catalog.feature_by_key("MyCustomPolicy").unwrap();
     assert_eq!(custom.value, PolicyValue::Bool(true));
     assert_eq!(custom.section, "privacy");
-    assert_eq!(catalog.features.len(), 48);
+    assert_eq!(catalog.features.len(), 60);
 }
 
 #[test]
@@ -273,12 +275,26 @@ fn features_for_filters_by_browser_and_keeps_original_indices() {
 
     let brave: Vec<_> = catalog.features_for(Browser::Brave).collect();
     let chrome: Vec<_> = catalog.features_for(Browser::Chrome).collect();
+    let edge: Vec<_> = catalog.features_for(Browser::Edge).collect();
 
-    assert_eq!(brave.len(), catalog.features.len());
-    assert_eq!(chrome.len(), catalog.features.len() - 17);
+    let edge_count = crate::domain::EDGE_ONLY_KEYS.len();
+    let brave_count = crate::domain::BRAVE_ONLY_KEYS.len();
+    assert_eq!(brave.len(), catalog.features.len() - edge_count);
+    assert_eq!(
+        chrome.len(),
+        catalog.features.len() - brave_count - edge_count
+    );
+    assert_eq!(edge.len(), catalog.features.len() - brave_count);
 
-    // Chrome 结果中不含 Brave 专属键
-    assert!(chrome
+    // 各浏览器结果不含其他浏览器的专属键
+    assert!(brave
+        .iter()
+        .all(|(_, f)| !crate::domain::EDGE_ONLY_KEYS.contains(&f.key.as_str())));
+    assert!(chrome.iter().all(
+        |(_, f)| !crate::domain::BRAVE_ONLY_KEYS.contains(&f.key.as_str())
+            && !crate::domain::EDGE_ONLY_KEYS.contains(&f.key.as_str())
+    ));
+    assert!(edge
         .iter()
         .all(|(_, f)| !crate::domain::BRAVE_ONLY_KEYS.contains(&f.key.as_str())));
     // 共享策略在两者中都在，且原始索引一致
@@ -295,4 +311,18 @@ fn features_for_filters_by_browser_and_keeps_original_indices() {
             .unwrap();
         assert_eq!(bi, ci, "{key} index must stay stable across browsers");
     }
+}
+
+#[test]
+fn brave_section_has_no_chrome_applicable_policies() {
+    let catalog = Catalog::from_json(BUILTIN_CATALOG).expect("valid");
+    let brave_section_chrome_policies: Vec<_> = catalog
+        .features_for(Browser::Chrome)
+        .filter(|(_, f)| f.section == "brave")
+        .map(|(_, f)| f.key.clone())
+        .collect();
+    assert!(
+        brave_section_chrome_policies.is_empty(),
+        "Chrome must have no policies in the Brave section, got {brave_section_chrome_policies:?}"
+    );
 }

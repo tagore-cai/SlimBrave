@@ -260,8 +260,9 @@ impl Theme {
     pub fn status_label(&self, ui: &mut egui::Ui, text: &str) {
         ui.label(
             RichText::new(text)
-                .color(self.status_text)
-                .font(egui::FontId::monospace(11.0)),
+                .color(self.text)
+                .strong()
+                .font(egui::FontId::monospace(12.0)),
         );
     }
 

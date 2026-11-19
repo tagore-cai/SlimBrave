@@ -98,17 +98,15 @@ impl SlimBraveApp {
     fn browser_picker(&mut self, ui: &mut egui::Ui) {
         let mut selected_browser = self.browser;
         egui::ComboBox::from_id_salt("browser")
-            .selected_text(match selected_browser {
-                Browser::Chrome => self.i18n.t("browser-chrome"),
-                Browser::Brave => self.i18n.t("browser-brave"),
-            })
+            .selected_text(self.i18n.t(selected_browser.i18n_key()))
             .width(90.0)
             .show_ui(ui, |ui| {
-                for (browser, key) in [
-                    (Browser::Brave, "browser-brave"),
-                    (Browser::Chrome, "browser-chrome"),
-                ] {
-                    ui.selectable_value(&mut selected_browser, browser, self.i18n.t(key));
+                for browser in [Browser::Brave, Browser::Chrome, Browser::Edge] {
+                    ui.selectable_value(
+                        &mut selected_browser,
+                        browser,
+                        self.i18n.t(browser.i18n_key()),
+                    );
                 }
             });
         if selected_browser != self.browser {
@@ -239,9 +237,9 @@ impl SlimBraveApp {
                     }
                     ui.checkbox(&mut self.dry_run, self.i18n.t("dry-run"))
                         .on_hover_text(self.i18n.t("dry-run"));
-                    ui.separator();
-                    theme.status_label(ui, &self.status);
                 });
+                ui.separator();
+                theme.status_label(ui, &self.status);
             });
     }
 
@@ -281,6 +279,7 @@ impl SlimBraveApp {
                     .show(ui, |ui| {
                         self.feature_section(ui, theme, "section-brave", "brave");
                         self.feature_section(ui, theme, "section-perf", "perf");
+                        self.feature_section(ui, theme, "section-edge", "edge");
                     });
             });
     }

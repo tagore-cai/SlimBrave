@@ -18,23 +18,34 @@ pub(super) fn is_installed(channel: &Channel) -> bool {
     Path::new(&local).join(channel.data_dir).exists()
 }
 
-pub(super) fn is_brave_running(_channel: &Channel) -> bool {
+/// 由渠道推断浏览器进程名。修复了原先 Chrome 也误用 brave.exe 的潜在问题。
+fn process_exe(channel: &Channel) -> &'static str {
+    match channel.domain {
+        d if d.contains("Edge") => "msedge.exe",
+        d if d.contains("Chrome") => "chrome.exe",
+        _ => "brave.exe",
+    }
+}
+
+pub(super) fn is_brave_running(channel: &Channel) -> bool {
+    let exe = process_exe(channel);
     let Ok(output) = std::process::Command::new("tasklist")
-        .args(["/FI", "IMAGENAME eq brave.exe", "/FO", "CSV", "/NH"])
+        .args(["/FI", &format!("IMAGENAME eq {exe}"), "/FO", "CSV", "/NH"])
         .output()
     else {
         return false;
     };
     String::from_utf8_lossy(&output.stdout)
         .to_ascii_lowercase()
-        .contains("brave.exe")
+        .contains(exe)
 }
 
-pub(super) fn close_brave_process(_channel: &Channel) -> bool {
+pub(super) fn close_brave_process(channel: &Channel) -> bool {
+    let exe = process_exe(channel);
     let _ = std::process::Command::new("taskkill")
-        .args(["/IM", "brave.exe", "/T", "/F"])
+        .args(["/IM", exe, "/T", "/F"])
         .status();
-    !is_brave_running(_channel)
+    !is_brave_running(channel)
 }
 
 pub(super) fn remove_managed_pref_files(channel: &Channel, write_level: WriteLevel) -> Vec<String> {

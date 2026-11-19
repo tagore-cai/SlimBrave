@@ -50,10 +50,10 @@ Supported on Windows and macOS — native Rust / egui.
 
 ### Core policy management
 
-- [x] **48 curated policies + 15 site permissions** — grouped into Telemetry / Privacy & Security / Brave Features / Performance & Bloat, name-matched to the original Python version
+- [x] **60 curated policies + 15 site permissions** — grouped into Telemetry / Privacy & Security / Brave Features / Performance / Edge Features, name-matched to the original Python version
 - [x] **Data-driven catalog** — add/remove policies via JSON (`assets/catalog.json` + user overrides), no code changes
 - [x] **Quick presets** — High Privacy / High Security
-- [x] **Pull Settings from Brave** — reads back currently applied policies (managed prefs + legacy defaults domain)
+- [x] **Pull current browser settings** — reads back applied policies for the selected browser with a visible receipt (count, channel, time, sequence)
 - [x] **Policy Manager window** — enable/disable any policy on the fly
 - [x] **Import / Export settings** — JSON, compatible with the Python version's format
 - [x] **State persistence** — last applied settings restored on launch
@@ -62,8 +62,8 @@ Supported on Windows and macOS — native Rust / egui.
 
 - [x] **macOS** — `.mobileconfig` configuration profile (officially supported forced-policy mechanism)
 - [x] **Windows** — registry policies (HKCU, no elevation needed)
-- [x] **Dual browser** — Brave (Release/Beta/Dev/Nightly) and Chrome (Stable/Beta/Dev/Canary)
-- [x] **Close Brave before apply** — graceful quit → TERM → KILL fallback (macOS) / taskkill (Windows)
+- [x] **Three browsers** — Brave (Release/Beta/Dev/Nightly), Chrome (Stable/Beta/Dev/Canary), Edge (single shared policy channel)
+- [x] **Close the browser before apply** — graceful quit → TERM → KILL fallback (macOS) / taskkill with per-browser exe name (Windows)
 - [x] **Light Reset** — remove profile + managed plists + legacy domain keys
 
 ### Data & intelligence
@@ -90,7 +90,7 @@ Requirements: Rust 1.75+ (cargo).
 ```sh
 cargo run          # dev
 cargo run --release
-cargo test         # 43 tests
+cargo test         # 56 tests
 ```
 
 ### macOS quick start
@@ -99,7 +99,7 @@ cargo test         # 43 tests
 2. Tick policies (or use High Privacy / High Security presets).
 3. Click **Apply Settings** — a `.mobileconfig` configuration profile is generated and opened.
 4. Install it in **System Settings → Privacy & Security → Profiles** (one-time per channel).
-5. Click **Pull Settings from Brave** — the top-right badge turns green when the profile is active.
+5. Click **Pull Settings from <browser>** — the status line shows a receipt (policy count, channel, time, run number); on macOS it also reports profile status.
 
 > The profile is managed by macOS: update it by applying again, remove it with **Reset All Settings** or in System Settings.
 
@@ -197,13 +197,22 @@ Removing one = add its key to the `remove` list, or toggle it off in the Policy 
 
 - Brave: official `policy_templates.zip` (ADMX/ADML) + Chromium definitions
 - Chrome: Chromium `policy_definitions` (browser switcher in the top bar)
+- Edge: Chromium definitions for shared policies; Edge-only policies are built in
+  (`catalog.json` + i18n), because Microsoft ships its templates as a JS-generated
+  CAB with no stable direct URL
 
-The policy list follows the selected browser: Brave shows all 48 policies (including
-17 Brave-only keys such as `BraveRewardsDisabled`, `IPFSEnabled`, `TorDisabled`);
-Chrome shows only the 31 Chromium-compatible policies. The filtering is applied
+The policy list follows the selected browser. Base catalog is 48 policies; 12 Edge-only
+keys (`EdgeCopilotEnabled`, `EdgeWorkspacesEnabled`, ...) bring the total to 60.
+Brave shows the 48 Chromium+Brave policies (17 Brave-only such as
+`BraveRewardsDisabled`, `IPFSEnabled`, `TorDisabled`); Chrome shows the 31
+Chromium-compatible ones; Edge shows 31 shared + 12 Edge-only. Filtering is applied
 consistently to rendering, apply plan, presets, snapshot import, and template
-fetching (`Browser::supports_policy` / `Catalog::features_for`), so Brave-only keys
-are never written into Chrome.
+fetching (`Browser::supports_policy` / `Catalog::features_for`), so exclusive keys
+never leak across browsers.
+
+Edge uses a **single logical channel**: unlike Brave/Chrome, Edge reads policy from
+one domain (`com.microsoft.Edge` on macOS, `HKLM/HKCU\SOFTWARE\Policies\Microsoft\Edge`
+on Windows) shared by all its channels.
 
 ### Why SlimBrave Matters
 

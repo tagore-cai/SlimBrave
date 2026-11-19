@@ -29,6 +29,8 @@ pub struct SlimBraveApp {
     pub(crate) state: UiState,
     pub(crate) baseline: crate::domain::StateSnapshot,
     pub(crate) status: String,
+    /// 每次拉取自增，让状态栏带序号，重复点击也有可见变化。
+    pub(crate) pull_seq: u32,
     pub(crate) report: Option<platform::ApplyReport>,
     pub(crate) dry_run: bool,
     pub(crate) pending: Option<PendingAction>,
@@ -63,6 +65,7 @@ impl SlimBraveApp {
             state: UiState::default(),
             baseline: crate::domain::StateSnapshot::default(),
             status: String::new(),
+            pull_seq: 0,
             report: None,
             dry_run: false,
             pending: None,

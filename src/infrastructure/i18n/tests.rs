@@ -68,6 +68,7 @@ fn all_ftl_messages_resolve() {
             "section-privacy",
             "section-brave",
             "section-perf",
+            "section-edge",
             "section-permissions",
             "safe-browsing",
             "dns-over-https",
@@ -187,9 +188,11 @@ fn pull_button_reflects_current_browser() {
     use fluent::fluent_args;
     for lang in Lang::all() {
         let i18n = I18n::with_lang(lang);
-        for (browser_key, expected_name) in
-            [("browser-brave", "Brave"), ("browser-chrome", "Chrome")]
-        {
+        for (browser_key, expected_name) in [
+            ("browser-brave", "Brave"),
+            ("browser-chrome", "Chrome"),
+            ("browser-edge", "Edge"),
+        ] {
             let name = i18n.t(browser_key);
             let rendered = i18n.t_args("btn-pull", &fluent_args!["browser" => name.clone()]);
             assert!(
@@ -219,6 +222,33 @@ fn confirm_reset_reflects_current_browser() {
         assert!(
             !rendered.contains("{$browser}"),
             "{lang:?}: placeholder must be substituted"
+        );
+    }
+}
+
+#[test]
+fn pull_receipt_renders_with_all_args() {
+    use fluent::fluent_args;
+    for lang in Lang::all() {
+        let i18n = I18n::with_lang(lang);
+        let rendered = i18n.t_args(
+            "pull-receipt",
+            &fluent_args![
+                "count" => "12",
+                "channel" => "Release",
+                "time" => "12:34:56",
+                "seq" => "3"
+            ],
+        );
+        for token in ["12", "Release", "12:34:56", "3"] {
+            assert!(
+                rendered.contains(token),
+                "{lang:?}: receipt missing {token}: {rendered}"
+            );
+        }
+        assert!(
+            !rendered.contains("{$"),
+            "{lang:?}: unresolved placeholder: {rendered}"
         );
     }
 }

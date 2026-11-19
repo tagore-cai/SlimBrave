@@ -111,6 +111,17 @@ const CHROME_CHANNELS: [Channel; 4] = [
     },
 ];
 
+/// Microsoft Edge 全渠道共用同一策略域与注册表键（官方：macOS `com.microsoft.Edge`、
+/// Windows `HKLM/HKCU\SOFTWARE\Policies\Microsoft\Edge`），因此只建模单一逻辑渠道，
+/// 避免多个渠道写同一位置造成互相覆盖。
+const EDGE_CHANNELS: [Channel; 1] = [Channel {
+    name: "Stable",
+    domain: "com.microsoft.Edge",
+    app_name: "Microsoft Edge",
+    data_dir: "Microsoft/Edge",
+    reg_path: "Software\\Policies\\Microsoft\\Edge",
+}];
+
 #[derive(Debug, Clone)]
 pub struct ApplyReport {
     pub channel: &'static str,
@@ -135,6 +146,7 @@ pub fn channels_for(browser: Browser) -> Vec<Channel> {
     match browser {
         Browser::Chrome => CHROME_CHANNELS.to_vec(),
         Browser::Brave => CHANNELS.to_vec(),
+        Browser::Edge => EDGE_CHANNELS.to_vec(),
     }
 }
 
@@ -231,5 +243,17 @@ mod tests {
         let (channels, _) = installed_channels(Browser::Brave);
         assert!(!channels.is_empty());
         assert!(channels.iter().all(|c| CHANNELS.contains(c)));
+    }
+
+    #[test]
+    fn edge_uses_single_shared_policy_channel() {
+        let channels = channels_for(Browser::Edge);
+        assert_eq!(
+            channels.len(),
+            1,
+            "Edge policy domain is shared across channels"
+        );
+        assert_eq!(channels[0].domain, "com.microsoft.Edge");
+        assert_eq!(channels[0].reg_path, "Software\\Policies\\Microsoft\\Edge");
     }
 }

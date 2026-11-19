@@ -47,44 +47,65 @@ impl SlimBraveApp {
         }
     }
 
+    /// UTC 时钟摘要（HH:MM:SS），仅作为"刚刚发生"的可见标记，避免引入 chrono。
+    fn clock_hms() -> String {
+        use std::time::{SystemTime, UNIX_EPOCH};
+        let secs = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map(|d| d.as_secs())
+            .unwrap_or(0);
+        format!(
+            "{:02}:{:02}:{:02}",
+            (secs / 3600) % 24,
+            (secs / 60) % 60,
+            secs % 60
+        )
+    }
+
     pub(crate) fn pull_settings(&mut self) {
         let channel = self.current_channel();
         let raw = platform::merged_policy_source(&channel);
         let (payload, warnings) = sanitize_payload(&raw, self.platform, self.browser);
-        #[cfg(target_os = "macos")]
-        let _ = &warnings;
+        let count = payload.len();
         apply_payload_to_ui(&mut self.state, &payload, self.platform, self.browser);
         self.update_baseline();
 
         #[cfg(target_os = "macos")]
-        {
+        let profile_detail = {
             let profile_active = crate::infrastructure::profile::profile_installed(&channel);
             self.profile_active = Some(profile_active);
             let has_legacy = crate::infrastructure::platform::has_legacy_plists(&channel);
-            self.status = match (profile_active, has_legacy) {
-                (true, true) => self.i18n.t("status-profile-legacy"),
-                (true, false) => self.i18n.t("status-profile-active"),
-                (false, true) => self.i18n.t("status-legacy-mode"),
-                (false, false) => self.i18n.t("status-no-policies"),
-            };
-        }
-        #[cfg(not(target_os = "macos"))]
+            self.i18n.t(match (profile_active, has_legacy) {
+                (true, true) => "status-profile-legacy",
+                (true, false) => "status-profile-active",
+                (false, true) => "status-legacy-mode",
+                (false, false) => "status-no-policies",
+            })
+        };
+
+        self.pull_seq = self.pull_seq.wrapping_add(1);
+        let mut receipt = self.i18n.t_args(
+            "pull-receipt",
+            &fluent_args![
+                "count" => count,
+                "channel" => channel.name.to_string(),
+                "time" => Self::clock_hms(),
+                "seq" => self.pull_seq.to_string()
+            ],
+        );
+        #[cfg(target_os = "macos")]
         {
-            self.status = if warnings.is_empty() {
-                self.i18n.t_args(
-                    "settings-loaded",
-                    &fluent_args!["channel" => channel.name.to_string()],
-                )
-            } else {
-                self.i18n.t_args(
-                    "settings-loaded-warnings",
-                    &fluent_args![
-                        "channel" => channel.name.to_string(),
-                        "count" => warnings.len()
-                    ],
-                )
-            };
+            receipt.push(' ');
+            receipt.push_str(&profile_detail);
         }
+        if !warnings.is_empty() {
+            receipt.push(' ');
+            receipt.push_str(&self.i18n.t_args(
+                "pull-warnings-suffix",
+                &fluent_args!["count" => warnings.len()],
+            ));
+        }
+        self.status = receipt;
     }
 
     pub(crate) fn apply(&mut self) {

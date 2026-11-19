@@ -76,13 +76,16 @@ fn fetch_policies_network_end_to_end() {
 
 #[test]
 fn fetch_scope_only_targets_current_browsers_policies() {
-    use crate::domain::BRAVE_ONLY_KEYS;
+    use crate::domain::{BRAVE_ONLY_KEYS, EDGE_ONLY_KEYS};
 
     let (brave_keys, brave_existing) = super::fetch_scope(Browser::Brave);
     let (chrome_keys, chrome_existing) = super::fetch_scope(Browser::Chrome);
+    let (edge_keys, _) = super::fetch_scope(Browser::Edge);
 
-    assert_eq!(brave_keys.len(), 48);
-    assert_eq!(chrome_keys.len(), 48 - BRAVE_ONLY_KEYS.len());
+    let total = BRAVE_ONLY_KEYS.len() + EDGE_ONLY_KEYS.len() + 31;
+    assert_eq!(brave_keys.len(), total - EDGE_ONLY_KEYS.len());
+    assert_eq!(chrome_keys.len(), 31);
+    assert_eq!(edge_keys.len(), total - BRAVE_ONLY_KEYS.len());
 
     for key in BRAVE_ONLY_KEYS {
         assert!(

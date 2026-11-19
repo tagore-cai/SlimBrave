@@ -125,10 +125,12 @@ pub fn fetch_policies(browser: Browser) -> Result<usize, String> {
         version: match browser {
             Browser::Brave => "brave-official + chromium-main".to_owned(),
             Browser::Chrome => "chromium-main".to_owned(),
+            Browser::Edge => "chromium-main + builtin-edge".to_owned(),
         },
         source: match browser {
             Browser::Brave => format!("{CHROMIUM_SOURCE_URL}\n{BRAVE_SOURCE_URL}"),
             Browser::Chrome => CHROMIUM_SOURCE_URL.to_owned(),
+            Browser::Edge => format!("{CHROMIUM_SOURCE_URL}\n(builtin Edge policies)"),
         },
         policies,
     };
