@@ -13,7 +13,7 @@ dns-over-https = DNS Over HTTPS
 doh-template = DoH Template:
 btn-export = Export Settings
 btn-import = Import Settings
-btn-pull = Pull Settings from Brave
+btn-pull = Pull Settings from {$browser}
 btn-apply = Apply Settings
 btn-reset = Reset All Settings
 dry-run = "Dry run (don't write)"
@@ -83,7 +83,7 @@ preset-loaded = {$name} preset loaded. Changes are unsaved until Apply.
 confirm-close = {$app} is open.
 
     Close it now to continue?
-confirm-reset = This will close Brave, remove all managed policies, and reset the UI.
+confirm-reset = This will close {$browser}, remove all managed policies, and reset the UI.
 
     Continue?
 

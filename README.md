@@ -118,20 +118,59 @@ The bundle is ad-hoc signed for local use; distribution builds should sign with 
 src/
 ├── main.rs                    entry point
 ├── application/
-│   └── app.rs                 application layer: SlimBraveApp state & use cases
+│   └── app/                   SlimBraveApp state & use-case orchestration
+│       ├── mod.rs             struct, constructor, common helpers
+│       ├── config.rs          config/state persistence & paths
+│       └── actions.rs         apply / reset / pull / import / export / presets
 ├── domain/                    domain layer (no dependencies upward)
 │   ├── mod.rs                 PlatformKind, Browser enums
-│   ├── catalog.rs             JSON-driven policy catalog + three-layer merge
-│   ├── payload.rs             build/sanitize/apply policy payloads
-│   └── state.rs               UI state, snapshots, presets
+│   ├── catalog/               JSON-driven policy catalog + three-layer merge
+│   │   ├── mod.rs             public facade & re-exports
+│   │   ├── model.rs           PolicyValue / Feature / Permission / Catalog
+│   │   ├── schema.rs          serde structs (builtin / user / remote layers)
+│   │   ├── store.rs           process-wide singleton & file loading
+│   │   └── tests.rs
+│   ├── payload/               build / sanitize / restore policy payloads
+│   │   ├── mod.rs             value types & shared conversion helpers
+│   │   ├── plan.rs            build_apply_plan
+│   │   ├── sanitize.rs        sanitize_payload
+│   │   └── restore.rs         apply_payload_to_ui
+│   ├── state/                 UI state, snapshots, presets
+│   │   ├── mod.rs             shared constants & re-exports
+│   │   ├── ui_state.rs        in-memory checked / selection state
+│   │   ├── snapshot.rs        JSON-compatible snapshot conversion
+│   │   ├── preset.rs          privacy / security presets
+│   │   └── tests.rs
 ├── infrastructure/
-│   ├── platform.rs            macOS plist / Windows registry read-write
-│   ├── profile.rs             macOS .mobileconfig generation & install (macOS)
-│   ├── fetch.rs               pull official policy templates (non-Windows)
-│   └── i18n.rs                Fluent-based localization (en/zh)
+│   ├── platform/              cross-platform facade + per-OS implementations
+│   │   ├── mod.rs             Channel catalog & platform-agnostic API
+│   │   ├── macos.rs           Managed Preferences plist / profiles / process
+│   │   ├── windows.rs         registry / elevated HKLM write / process
+│   │   └── stub.rs            fallback for unsupported targets
+│   ├── profile/               macOS .mobileconfig generation & install (macOS)
+│   │   ├── mod.rs             public facade & re-exports
+│   │   ├── builder.rs         pure plist construction & stable UUID
+│   │   ├── install.rs         file IO & `profiles` / `open` commands
+│   │   └── tests.rs
+│   ├── fetch/                 pull official policy templates (non-Windows)
+│   │   ├── mod.rs             orchestration, download, remote catalog
+│   │   ├── admx.rs            Brave ADMX / ADML parser
+│   │   └── yaml.rs            Chromium YAML parser & description cleanup
+│   └── i18n/                  Fluent-based localization (en/zh)
+│       ├── mod.rs             public translation API (I18n)
+│       ├── lang.rs            language enum, embedded FTL, bundle building
+│       └── tests.rs
+├── logging.rs                 shared diagnostic log (stderr / Windows file)
 └── presentation/
-    ├── ui.rs                  egui rendering (panels, policy manager)
-    └── theme.rs               design-token theming (dark/light, JSON overrides)
+    ├── ui/                    egui rendering
+    │   ├── mod.rs             layout orchestration (App::update)
+    │   ├── layout.rs          header / status / content panel rendering
+    │   ├── widgets.rs         feature / permission panels, name & tooltip
+    │   └── windows.rs         policy manager window
+    └── theme/                 design-token theming (dark/light, JSON overrides)
+        ├── mod.rs             public facade & re-exports
+        ├── tokens.rs          color tokens, palettes, widget helpers
+        └── fonts.rs           embedded CJK font registration
 assets/
 ├── catalog.json               builtin policy catalog (48 features, 15 permissions, presets)
 └── i18n/*.ftl                 Fluent message files
@@ -158,6 +197,13 @@ Removing one = add its key to the `remove` list, or toggle it off in the Policy 
 
 - Brave: official `policy_templates.zip` (ADMX/ADML) + Chromium definitions
 - Chrome: Chromium `policy_definitions` (browser switcher in the top bar)
+
+The policy list follows the selected browser: Brave shows all 48 policies (including
+17 Brave-only keys such as `BraveRewardsDisabled`, `IPFSEnabled`, `TorDisabled`);
+Chrome shows only the 31 Chromium-compatible policies. The filtering is applied
+consistently to rendering, apply plan, presets, snapshot import, and template
+fetching (`Browser::supports_policy` / `Catalog::features_for`), so Brave-only keys
+are never written into Chrome.
 
 ### Why SlimBrave Matters
 

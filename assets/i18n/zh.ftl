@@ -13,7 +13,7 @@ dns-over-https = 基于 HTTPS 的 DNS
 doh-template = DoH 模板：
 btn-export = 导出设置
 btn-import = 导入设置
-btn-pull = 从 Brave 拉取设置
+btn-pull = 从 {$browser} 拉取设置
 btn-apply = 应用设置
 btn-reset = 重置所有设置
 dry-run = 干跑（不写入）
@@ -27,7 +27,7 @@ write-level-user = 用户级（HKCU，无需管理员）
 write-level-machine = 机器级（HKLM，需 UAC 授权）
 profile-badge-active = 描述文件：已激活
 profile-badge-none = 描述文件：未安装
-profile-badge-hint = 显示 SlimBrave 配置描述文件是否已安装。可用"从 Brave 拉取设置"刷新。
+profile-badge-hint = 显示 SlimBrave 配置描述文件是否已安装。可用"拉取设置"按钮刷新。
 profile-generated = 配置描述文件已生成并打开。请在 系统设置 → 隐私与安全性 → 描述文件 中安装。
 profile-removed = 配置描述文件已移除。
 browser-not-installed = 未检测到 {$browser} 安装，将使用默认渠道。
@@ -83,7 +83,7 @@ preset-loaded = 已加载{$name}预设。更改在应用前不会保存。
 confirm-close = {$app} 正在运行。
 
     是否现在关闭以继续？
-confirm-reset = 这将关闭 Brave、移除所有受管策略并重置界面。
+confirm-reset = 这将关闭 {$browser}、移除所有受管策略并重置界面。
 
     是否继续？
 

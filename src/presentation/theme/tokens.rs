@@ -1,3 +1,5 @@
+//! 设计令牌与主题构造：深浅两套配色、JSON 覆盖与 egui 绘制助手。
+
 use std::collections::BTreeMap;
 
 use eframe::egui::{self, Color32, RichText, Stroke};
@@ -205,7 +207,8 @@ impl Theme {
             egui::Visuals::dark()
         } else {
             egui::Visuals::light()
-        };        visuals.panel_fill = self.bg;
+        };
+        visuals.panel_fill = self.bg;
         visuals.window_fill = self.bg;
         visuals.override_text_color = Some(self.text);
         visuals.selection.bg_fill = self.selection;
@@ -247,12 +250,7 @@ impl Theme {
     }
 
     pub fn section_title(&self, ui: &mut egui::Ui, text: &str) {
-        ui.label(
-            RichText::new(text)
-                .color(self.section)
-                .strong()
-                .size(14.0),
-        );
+        ui.label(RichText::new(text).color(self.section).strong().size(14.0));
     }
 
     pub fn accent_label(&self, ui: &mut egui::Ui, text: &str) {
@@ -295,63 +293,9 @@ impl Theme {
     }
 }
 
-pub fn cjk_font_bytes() -> &'static [u8] {
-    include_bytes!("../../assets/NotoSansSC-Regular.otf")
-}
-
-pub fn install_cjk_fonts(ctx: &egui::Context) {
-    let mut fonts = egui::FontDefinitions::default();
-    fonts
-        .font_data
-        .insert("cjk".to_owned(), egui::FontData::from_static(cjk_font_bytes()).into());
-    for family in [egui::FontFamily::Proportional, egui::FontFamily::Monospace] {
-        fonts
-            .families
-            .get_mut(&family)
-            .unwrap()
-            .push("cjk".to_owned());
-    }
-    ctx.set_fonts(fonts);
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn cjk_font_parses_and_has_cjk_glyphs() {
-        use ab_glyph::Font;
-        let font = ab_glyph::FontArc::try_from_vec(cjk_font_bytes().to_vec())
-            .unwrap_or_else(|err| panic!("font failed to parse: {err}"));
-        for ch in ['中', '文', '打', '开', '设', '置'] {
-            assert!(font.glyph_id(ch).0 != 0, "glyph missing for {ch}");
-        }
-    }
-
-    #[test]
-    fn egui_layouts_cjk_via_fallback() {
-        let mut defs = egui::FontDefinitions::default();
-        defs.font_data.insert(
-            "cjk".to_owned(),
-            egui::FontData::from_static(cjk_font_bytes()).into(),
-        );
-        for family in [egui::FontFamily::Proportional, egui::FontFamily::Monospace] {
-            defs.families.get_mut(&family).unwrap().push("cjk".to_owned());
-        }
-        let fonts = egui::epaint::text::Fonts::new(1.0, 4096, defs);
-        let font_id = egui::FontId::proportional(14.0);
-        assert!(
-            fonts.has_glyphs(&font_id, "中文测试"),
-            "fallback font must provide CJK glyphs"
-        );
-
-        let default_fonts =
-            egui::epaint::text::Fonts::new(1.0, 4096, egui::FontDefinitions::default());
-        assert!(
-            !default_fonts.has_glyphs(&font_id, "中文测试"),
-            "default egui fonts must NOT have CJK glyphs (sanity check)"
-        );
-    }
 
     #[test]
     fn dark_and_light_themes_are_consistent() {
@@ -365,10 +309,7 @@ mod tests {
 
     #[test]
     fn parse_color_accepts_hex_formats() {
-        assert_eq!(
-            parse_color("#ff0000"),
-            Some(Color32::from_rgb(255, 0, 0))
-        );
+        assert_eq!(parse_color("#ff0000"), Some(Color32::from_rgb(255, 0, 0)));
         assert_eq!(
             parse_color("ff000080"),
             Some(Color32::from_rgba_unmultiplied(255, 0, 0, 128))

@@ -1,6 +1,12 @@
+// Windows GUI 程序默认使用 console 子系统，双击 exe 会附带弹出一个终端窗口。
+// 声明为 windows 子系统后与控制台分离，不再弹出终端；该属性在非 Windows 目标自动忽略。
+// 代价：stderr/stdout 输出不再显示，日志需落盘（见下方 logging 初始化）。
+#![cfg_attr(target_os = "windows", windows_subsystem = "windows")]
+
 mod application;
 mod domain;
 mod infrastructure;
+mod logging;
 mod presentation;
 
 use application::app::SlimBraveApp;

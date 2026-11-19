@@ -116,20 +116,59 @@ cargo test         # 43 项测试
 src/
 ├── main.rs                    入口
 ├── application/
-│   └── app.rs                 应用层：SlimBraveApp 状态与用例
+│   └── app/                   应用层：SlimBraveApp 状态与用例编排
+│       ├── mod.rs             结构、构造、通用助手
+│       ├── config.rs          配置/状态持久化与路径
+│       └── actions.rs         应用/重置/拉取/导入导出/预设
 ├── domain/                    领域层（不依赖上层）
 │   ├── mod.rs                 PlatformKind、Browser 枚举
-│   ├── catalog.rs             JSON 驱动的策略目录 + 三层合并
-│   ├── payload.rs             策略载荷构建/清洗/应用
-│   └── state.rs               UI 状态、快照、预设
+│   ├── catalog/               JSON 驱动的策略目录 + 三层合并
+│   │   ├── mod.rs             公共门面与导出
+│   │   ├── model.rs           PolicyValue / Feature / Permission / Catalog 领域模型
+│   │   ├── schema.rs          serde 数据结构（内置/用户/远程三层）
+│   │   ├── store.rs           进程级单例与文件加载
+│   │   └── tests.rs
+│   ├── payload/               策略载荷构建/清洗/回灌
+│   │   ├── mod.rs             值类型与共享转换助手
+│   │   ├── plan.rs            build_apply_plan
+│   │   ├── sanitize.rs        sanitize_payload
+│   │   └── restore.rs         apply_payload_to_ui
+│   ├── state/                 UI 状态、快照、预设
+│   │   ├── mod.rs             公共常量与导出
+│   │   ├── ui_state.rs        内存中的勾选 / 选择状态
+│   │   ├── snapshot.rs        JSON 兼容的快照转换
+│   │   ├── preset.rs          高隐私 / 高安全预设
+│   │   └── tests.rs
 ├── infrastructure/
-│   ├── platform.rs            macOS plist / Windows 注册表读写
-│   ├── profile.rs             macOS .mobileconfig 生成与安装（macOS）
-│   ├── fetch.rs               拉取官方策略模板（非 Windows）
-│   └── i18n.rs                Fluent 本地化（中/英）
+│   ├── platform/              跨平台门面 + 各系统实现
+│   │   ├── mod.rs             Channel 目录与平台无关 API
+│   │   ├── macos.rs           Managed Preferences plist / 描述文件 / 进程
+│   │   ├── windows.rs         注册表 / 提权写 HKLM / 进程
+│   │   └── stub.rs            不支持平台的兜底
+│   ├── profile/               macOS .mobileconfig 生成与安装（macOS）
+│   │   ├── mod.rs             公共门面与导出
+│   │   ├── builder.rs         纯 plist 构造与稳定 UUID
+│   │   ├── install.rs         文件 IO 与 `profiles` / `open` 命令
+│   │   └── tests.rs
+│   ├── fetch/                 拉取官方策略模板（非 Windows）
+│   │   ├── mod.rs             编排、下载、远程目录
+│   │   ├── admx.rs            Brave ADMX / ADML 解析
+│   │   └── yaml.rs            Chromium YAML 解析与描述清洗
+│   └── i18n/                  Fluent 本地化（中/英）
+│       ├── mod.rs             对外翻译 API（I18n）
+│       ├── lang.rs            语言枚举、内嵌 FTL、bundle 构建
+│       └── tests.rs
+├── logging.rs                 共用诊断日志（stderr / Windows 落盘）
 └── presentation/
-    ├── ui.rs                  egui 渲染（面板、策略管理）
-    └── theme.rs               设计令牌主题（深/浅、JSON 覆盖）
+    ├── ui/                    egui 渲染
+    │   ├── mod.rs             布局编排（App::update）
+    │   ├── layout.rs          顶栏 / 底栏 / 内容面板渲染
+    │   ├── widgets.rs         策略/权限面板、名称与提示
+    │   └── windows.rs         策略管理窗口
+    └── theme/                 设计令牌主题（深/浅、JSON 覆盖）
+        ├── mod.rs             公共门面与导出
+        ├── tokens.rs          颜色令牌、调色板、widget 助手
+        └── fonts.rs           内嵌 CJK 字体注册
 assets/
 ├── catalog.json               内置策略目录（48 策略、15 权限、预设）
 └── i18n/*.ftl                 Fluent 消息文件
@@ -156,6 +195,12 @@ tools/                         fetch_policies.py（Windows 备用）
 
 - Brave：官方 `policy_templates.zip`（ADMX/ADML）+ Chromium 定义
 - Chrome：Chromium `policy_definitions`（顶栏切换浏览器）
+
+策略列表随所选浏览器变化：Brave 显示全部 48 项（含 17 项 Brave 专属，如
+`BraveRewardsDisabled`、`IPFSEnabled`、`TorDisabled`），Chrome 只显示 31 项
+Chromium 通用策略。过滤统一作用在界面渲染、应用计划、预设、快照导入与模板拉取
+（`Browser::supports_policy` / `Catalog::features_for`），确保 Brave 专属键不会被
+写入 Chrome。
 
 ---
 
